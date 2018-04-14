@@ -1,0 +1,207 @@
+body {
+    background-color: #FFFFFF;
+}
+
+h1 {
+    /*color: #571D69;*/
+}
+
+svg {
+    font: 11px sans-serif;
+}
+
+/*.axis path,*/
+/*.axis line {*/
+/*fill: none;*/
+/*/!*stroke: #000;*!/*/
+/*stroke: #aaa;*/
+/*shape-rendering: crispEdges;*/
+/*}*/
+/* text style for legends and 'no. of iterations' */
+text.mono {
+    font-size: 12pt;
+    /*font-family: Calibri;*/
+    /*fill: #aaa;*/
+    fill: grey;
+}
+
+.x-axis path, .x-axis line, .y-axis path, .y-axis line, path.line {
+    fill: none;
+    stroke: #aaa;
+    shape-rendering: crispEdges;
+}
+
+#currentLineLoad, #lineAload {
+    /*color: ;*/
+    stroke: #49006a;
+}
+
+#currentLinePrice, #lineAprices {
+    /*color: ;*/
+    stroke: rgb(0, 69, 41);
+}
+
+#currentLineLoadfw, #lineAloadfw {
+    /*color: ;*/
+    stroke: rgb(217, 95, 14);
+}
+
+/* text styles for axises */
+/*.x-axis text, .y-axis text {*/
+/*font-size: 12pt;*/
+/*!*fill: #aaa;*!*/
+/*fill: grey;*/
+/*}*/
+
+text.text-highlight {
+    /*fill: #c00;*/
+    fill: #946868;
+    font-size: 13pt;
+    font-weight: bold;
+}
+
+rect.bin-hover {
+    stroke: #946868;
+    stroke-width: 5px;
+}
+
+.tooltips {
+    position: absolute;
+    /*width: 200px;*/
+    width: auto;
+    height: auto;
+    padding: 10px;
+    background-color: white;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    /*display: block;*/
+}
+
+.linegraphs {
+    position: absolute;
+    width: auto;
+    height: auto;
+    padding: 10px;
+    background-color: white;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    /*display: block;*/
+}
+
+.hidden {
+    display: none;
+}
+
+.arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+
+    border-left: 8px solid black;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+th {
+    border-bottom: 2px solid #ddd;
+    border-left: 1px solid #ddd;
+/ / padding: 1 px;
+/ / font-weight: bold;
+}
+
+td {
+    padding: 3.5px;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    font-size: 8.5pt;
+}
+
+#chart {
+    padding: 0px;
+}
+
+.focus circle {
+    fill: none;
+    stroke: steelblue;
+}
+
+.overlay {
+    fill: none;
+    pointer-events: all;
+}
+
+.line {
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+
+.site-footer {
+    color: grey;
+    height: 40px;
+    line-height: 1;
+    position: fixed;
+    z-index: 5001;
+    width: 100%;
+    bottom: 0;
+    padding: 0 6px;
+    display: flex;
+    align-items: center;
+    background: white;
+    border-top: 1px solid lightgray;
+}
+
+#footer-container {
+    z-index: 1;
+    flex-grow: 1;
+}
+
+/*css for the loading image*/
+#divLoading {
+    display: none;
+}
+
+#divLoading.show {
+    display: block;
+    position: fixed;
+    z-index: 100;
+    background-image: url('imgs/loading.gif');
+    background-color: #666;
+    opacity: 0.4;
+    background-repeat: no-repeat;
+    background-position: center;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    top: 0;
+}
+
+#loadinggif.show {
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    z-index: 101;
+    width: 32px;
+    height: 32px;
+    margin-left: -16px;
+    margin-top: -16px;
+}
+
+div.content {
+    width: 1000px;
+    height: 1000px;
+}

@@ -1,0 +1,7 @@
+results/*
+rerun/*
+analysis/*
+*.pyc
+*.DS_Store
+others/*
+*.csv

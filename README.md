@@ -1,2 +1,3 @@
-# deterministic-rtp-ad
+# deterministic-rtp
 
+multiple houses, no batteries, no renewable.

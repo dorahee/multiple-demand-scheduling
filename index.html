@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="apps/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="apps/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="apps/results.css">
+    <link rel="stylesheet" type="text/css" href="apps/colorbrewer.css">
+
+    <!--
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/d3-queue.v3.min.js"></script>
+    -->
+    <script type="text/javascript" charset="utf8" src="apps/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="apps/jquery.dataTables.js"></script>
+    <script src="apps/bootstrap.min.js"></script>
+    <script src="apps/d3.v3.min.js"></script>
+    <script src="apps/d3-queue.v3.min.js"></script>
+    <script src="apps/colorbrewer.js"></script>
+    <script src="apps/results.js"></script>
+    <style>
+        .x-axis-thumbnail path {
+            opacity: 1;
+        }
+
+        .navbar .hot-pop-blue {
+            background-color: rgb(31, 148, 210);
+        }
+
+        .navbar-default {
+            background-color: #F8F8F8;
+            border-color: #E7E7E7;
+        }
+
+        /*.header-fixed {*/
+        /*!*width: 100%*!*/
+        /*}*/
+
+        /*.header-fixed > thead,*/
+        /*.header-fixed > tbody,*/
+        /*.header-fixed > thead > tr,*/
+        /*.header-fixed > tbody > tr,*/
+        /*.header-fixed > thead > tr > th,*/
+        /*.header-fixed > tbody > tr > td {*/
+        /*display: block;*/
+        /*}*/
+
+        /*.header-fixed > tbody > tr:after,*/
+        /*.header-fixed > thead > tr:after {*/
+        /*content: ' ';*/
+        /*display: block;*/
+        /*visibility: hidden;*/
+        /*clear: both;*/
+        /*}*/
+
+        /*.header-fixed > tbody {*/
+        /*overflow-y: auto;*/
+        /*height: 150px;*/
+        /*}*/
+
+        /*.header-fixed > tbody > tr > td,*/
+        /*.header-fixed > thead > tr > th {*/
+        /*!*width: 20%;*!*/
+        /*float: left;*/
+        /*}*/
+
+        /*table {*/
+        /*!*width: 100%;*!*/
+        /*overflow-x: auto;*/
+        /*}*/
+
+        /*thead, tbody, tr, td, th { display: block; }*/
+
+        /*tr:after {*/
+        /*content: ' ';*/
+        /*display: block;*/
+        /*visibility: hidden;*/
+        /*clear: both;*/
+        /*}*/
+
+        /*thead th {*/
+        /*height: 30px;*/
+
+        /*!*text-align: left;*!*/
+        /*}*/
+
+        /*tbody {*/
+        /*height: 120px;*/
+        /*overflow-x: auto;*/
+        /*overflow-y: auto;*/
+        /*}*/
+
+        /*thead {*/
+        /*!* fallback *!*/
+        /*}*/
+
+        /*tbody td, thead th {*/
+        /*!*width: 1%;*!*/
+        /*float: left;*/
+        /*}*/
+
+        /*table {*/
+        /*overflow-x: scroll;*/
+        /*width:100%;*/
+        /*}*/
+
+        /*thead{*/
+        /*!*display: none;*!*/
+        /*position:fixed;*/
+        /*!*position:fixed;*!*/
+        /*!*display: block;*!*/
+        /*}*/
+
+        /*tbody {*/
+        /*max-height: 500px;*/
+        /*overflow-y: scroll;*/
+        /*display: block;*/
+        /*}*/
+
+        table {
+            /*width: 500px;*/
+            border-collapse: collapse;
+            overflow: auto;
+        }
+
+        thead {
+            display: block;
+            /*display:table-column-group;*/
+            /*width: 500px;*/
+            /*width: 100%;*/
+            overflow: auto;
+            /*color: white;*/
+            /*background: black;*/
+        }
+
+        tr:nth-child(even) {
+            background: #CCC
+        }
+
+        tr:nth-child(odd) {
+            background: #FFF
+        }
+
+        tbody {
+            display: block;
+            /*width: 100%;*/
+            /*width: 500px;*/
+            height: 700px;
+            /*background: grey;*/
+            overflow: auto;
+        }
+
+        th, td {
+            padding: 10px;
+            border-left: 1px solid lightgrey;
+        }
+
+        .width200 {
+            min-width: 130px;
+        }
+
+        .navbar {
+            min-height: 0px;
+        }
+        
+        body { padding-top: 70px; }
+        select[class*="span"] {
+            margin-bottom: 0;
+        }
+
+
+    </style>
+
+</head>
+<body>
+
+
+
+<div class="container-fluid" id="top-container">
+        <div role="tabpanel">
+            <!--ul class="nav nav-tabs" role="tablist" -->
+            <div  class="col-xs-12">
+                <nav class="navbar navbar-default navbar-fixed-top">
+                    <div class="top-container">
+                        <ul class="nav nav-pills pull-left" role="tablist">
+                            <li role="presentation"><a href="#data" aria-controls="data" role="tab" data-toggle="tab">Research Overview</a></li>
+                            <li role="presentation"><a href="#lookup" aria-controls="lookup" role="tab" data-toggle="tab">Price Table</a></li>
+                            <li role="presentation"><a href="#table" aria-controls="table" role="tab" data-toggle="tab">Results</a></li>
+                            <li role="presentation" class="active"><a href="#heatmap" aria-controls="heatmap" role="tab" data-toggle="tab">Visualisation</a></li>
+              <!--       <li role="presentation"><a href="#anaylsis" aria-controls="anaylsis" role="tab" data-toggle="tab">Graphs</a></li> -->
+                        </ul>
+                        <form class="navbar-form pull-right">
+                            <div> Experiments at  
+                                <select class="form-control" id="selectionDropdownDate"></select>
+                                <select class="form-control" id="selectionDropdownTime"></select>
+                                <button type="button" class="btn btn-default" id="go_btn">Show</button>
+                            </div>
+                        </form> 
+
+                    </div>
+                </nav>
+            </div>
+<!-- 
+            <div class="col-xs-5">
+
+                <select class="input-small" id="selectionDropdownDate">
+                        </select>
+                        <select class="input-small" id="selectionDropdownTime">
+                        </select>
+                        <button type="button" id="go_btn">Show</button>
+                <nav class="navbar navbar-expand-md sticky-top navbar-dark  bg-light col-sm-12" , id="info_row">
+                    <div class="col-sm-12">
+                        <select class="input-small" id="selectionDropdownDate">
+                        </select>
+                        <select class="input-small" id="selectionDropdownTime">
+                        </select>
+                        <button type="button" id="go_btn">Show</button>
+                    </div>
+                </nav>
+            </div> -->
+
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane" id="data"></div>
+                <div role="tabpanel" class="tab-pane" id="lookup"></div>
+                <div role="tabpanel" class="tab-pane" id="table"></div>
+                <div role="tabpanel" class="tab-pane active" id="heatmap"></div>
+                <!-- <div role="tabpanel" class="tab-pane" id="anaylsis"></div> -->
+            </div>
+        </div>
+    </div>
+
+<script>
+    $(function(){
+      $("#data").load("apps/overview.html"); 
+      $("#lookup").load("apps/lookup.html"); 
+      $("#table").load("apps/results.html"); 
+      $("#heatmap").load("apps/visualisation.html"); 
+    });
+
+    $(document).ready(function () {
+        var $dropDownDate = $("#selectionDropdownDate");
+        var $dropDownTime = $("#selectionDropdownTime");
+        var $goBtn = $("#go_btn");
+
+        $.get("/dates", function (dates) {
+            dates.forEach(function (d) {
+                $dropDownDate.append($('<option></option>').val(d).text("Date: " + d));
+            });
+            updateDropDownTime();
+        });
+
+        $dropDownTime.change(magic);
+        $dropDownDate.change(updateDropDownTime);
+
+        function updateDropDownTime() {
+            $.get("/times?date=" + $dropDownDate.val(), function (times) {
+                $dropDownTime.empty();
+                times.forEach(function (d) {
+                    $dropDownTime.append($('<option></option>').val(d).text("Time: " + d));
+                });
+                magic();
+            });
+        }
+
+        $goBtn.click(magic);
+
+        function magic() {
+            // var file_path = "results/" + $dropDownDate.val() + "/" + $dropDownTime.val() + "/" + "data/";
+            // var file_path_backup = "results/" + $dropDownDate.val() + "/" + $dropDownTime.val() + "/" + "backup/";
+            var file_path2 = "results/" + $dropDownDate.val() + "/" + $dropDownTime.val()
+            var tab_active = $('.nav-pills .active a').attr("href");
+            showData(file_path2, tab_active);
+            // show_simulation(file_path, file_path_backup);
+        }
+    });
+</script>
+</body>
+</html>
+
