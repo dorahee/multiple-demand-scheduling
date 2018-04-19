@@ -2,7 +2,7 @@
 # Version 3 uses a for loop to find the cheapest time slot, instead of using the list comprehension
 
 from inputs import no_intervals_day, penalty_coefficient, \
-    i_pstart, i_astart, i_estart, i_dur, i_lfinish, i_caf, i_demand, i_bill, i_penalty
+    i_pstart, i_astart, i_estart, i_dur, i_lfinish, i_caf, i_demand, i_bill, i_penalty, show_astart
 from time import time
 
 
@@ -23,8 +23,10 @@ def main(household, prices_long, total_penalty):
         job_demands.append(int(job[i_demand] * 1000))
         job = evaluate_job(job, prices_long)
         total_penalty += job[i_penalty]
+        # print(job[i_penalty])
 
-    # print("astarts", [j[i_astart] for j in household], "obj", sum([j[i_penalty] + j[i_bill] for j in household]))
+    if show_astart:
+        print("astarts", [j[i_astart] for j in household], "obj", sum([j[i_penalty] + j[i_bill] for j in household]))
 
     return total_penalty
 
@@ -74,7 +76,7 @@ def evaluate_job(job, price_long):
     min_cost = min(costs_job)
     min_cost_indices = [i for i, x in enumerate(costs_job) if x == min_cost]
     # print(min_cost_indices)
-    chosen_index = min_cost_indices[-1]
+    chosen_index = min_cost_indices[0]
 
     # for i in xrange(len(price_long) - dur + 1):
     #     bill = sum(price_long[i: i + dur]) * load_per_scheduling_period

@@ -3,7 +3,7 @@
 
 from inputs import no_intervals_day, penalty_coefficient, \
     i_pstart, i_astart, i_estart, i_dur, i_lfinish, i_caf, i_demand, i_bill, i_penalty, \
-    i_predecessor, i_succeeding_delay, i_name, minizinc_model, minizinc_data
+    i_predecessor, i_succeeding_delay, i_name, minizinc_model, minizinc_data, show_astart
 from subprocess import PIPE, Popen
 from json import loads
 from time import time
@@ -47,6 +47,7 @@ def main(household, prices_long, total_penalty):
         job[i_astart] = astart % no_intervals_day
         job[i_penalty] = abs(astart - job[i_pstart]) * job[i_caf] * penalty_coefficient
         total_penalty += job[i_penalty]
+        # print(job[i_penalty])
 
     # print("update jobs time", time()-start)
 
@@ -76,7 +77,7 @@ def evaluate_job(job, price_long, costs_matrix):
     else:
         price_previous_day = [price_long[i % no_intervals_day] if i >= e_s else big_num for i in range(-dur + 1, 0)]
         price_next_day = [price_long[i] if i + no_intervals_day <= l_f else big_num
-                          for i in range(dur - 1)]
+                          for i in range(no_intervals_day, no_intervals_day + dur - 1)]
 
         # if e_s is in the previous day and l_f is in today
         if e_s < 0:
@@ -146,7 +147,9 @@ def solve_gurobi(costs_matrix, job_demands, job_durations, num_precedences, pred
     # print('SOLUTION:')
     astarts = [(sum([int(i * t.x) for i, t in enumerate(d)]) - job_durations[j] + 1) % no_intervals_day
                for j, d in enumerate(devices)]
-    # print("g solution", astarts, m.objVal)
+
+    if show_astart:
+        print("g solution", astarts, m.objVal)
 
     return astarts
 

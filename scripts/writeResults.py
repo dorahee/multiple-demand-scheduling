@@ -57,40 +57,60 @@ def prepare(no_houses, no_batteries, no_jobs_max, no_jobs_min,
     headers = ["itr", "alpha", "fw_itrs_t", "fw_itrs"]
     s_fw = str(headers)[1:-1].replace("'", "").replace(" ", "") + "\r\n"
 
-    return s_loads_houses, s_overview, s_costs, s_lookup, s_demands, s_prices, s_fw
-
-
-def main(s_overview, s_loads, s_costs, s_prices, s_fw, s_lookup, s_loads_houses, h, i, r, t, data, incon, lookup, notes):
-
     nowtime = datetime.now()
     # now = nowtime.strftime("%y-%m-%d_%H.%M.%S") + "." + str(nowtime.microsecond)
     now = nowtime.strftime("%H.%M.%S") + "." + str(nowtime.microsecond)
     date_name = datetime.now().strftime("%y-%m-%d")
     directory = "results/" + date_name + "/"
-    sub_dir = directory + now + "-" + str(h) + "h" + "/"
+    sub_dir = directory + now + "-" + str(no_houses) + "h" + "/"
 
     if not path.exists(sub_dir):
         makedirs(sub_dir)
+
+    return s_loads_houses, s_overview, s_costs, s_lookup, s_demands, s_prices, s_fw, sub_dir
+
+
+def append(sub_dir, s_demands, s_costs, s_prices, s_fw):
+
+    file_name = "costs.csv"
+    with open(sub_dir + file_name, 'a') as output_file:
+        output_file.write(s_costs)
+
+    file_name = "loads.csv"
+    with open(sub_dir + file_name, 'a') as output_file:
+        output_file.write(s_demands)
+
+    file_name = "prices.csv"
+    with open(sub_dir + file_name, 'a') as output_file:
+        output_file.write(s_prices)
+
+    file_name = "fw.csv"
+    with open(sub_dir + file_name, 'a') as output_file:
+        output_file.write(s_fw)
+
+
+def final(sub_dir, s_overview, s_loads, s_costs, s_prices, s_fw, s_lookup,
+          s_loads_houses, h, i, r, t, data, incon, lookup, notes):
 
     file_name = "overview.csv"
     with open(sub_dir + file_name, 'wb') as output_file:
         output_file.write(s_overview)
 
-    file_name = "costs.csv"
-    with open(sub_dir + file_name, 'wb') as output_file:
-        output_file.write(s_costs)
-
-    file_name = "loads.csv"
-    with open(sub_dir + file_name, 'wb') as output_file:
-        output_file.write(s_loads)
-
-    file_name = "prices.csv"
-    with open(sub_dir + file_name, 'wb') as output_file:
-        output_file.write(s_prices)
-
-    file_name = "fw.csv"
-    with open(sub_dir + file_name, 'wb') as output_file:
-        output_file.write(s_fw)
+    # file_name = "costs.csv"
+    # with open(sub_dir + file_name, 'wb') as output_file:
+    #     output_file.write(s_costs)
+    #
+    # file_name = "loads.csv"
+    # with open(sub_dir + file_name, 'wb') as output_file:
+    #     output_file.write(s_loads)
+    #
+    # file_name = "prices.csv"
+    # with open(sub_dir + file_name, 'wb') as output_file:
+    #     output_file.write(s_prices)
+    #
+    # file_name = "fw.csv"
+    # with open(sub_dir + file_name, 'wb') as output_file:
+    #     output_file.write(s_fw)
 
     file_name = "lookup.csv"
     with open(sub_dir + file_name, 'wb') as output_file:

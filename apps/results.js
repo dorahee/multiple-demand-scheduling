@@ -69,9 +69,12 @@ function showResults(csv_file_load, csv_file_price, csv_file_cost, csv_file_sum,
                 var keys = Object.keys(data_load[0]);
                 var no_periods = keys.length - 2;
                 var type_load = "f", type_price = "f";
-                var loads_fw = [], prices = [], loads_o = [];
+                var loads_fw = [], prices = [], loads_o = [], prices_o = [];
 
-                var graph_load_class = "load-graph", graph_price_class = "price-graph";
+                var graph_load_class_actual = "load-graph-actual",
+                    graph_load_class_expected = "load-graph-expected",
+                    graph_price_class_actual = "price-graph-actual",
+                    graph_price_class_expected = "price-graph-expected";
                 var point_cost_class = "point-cost", point_penalty_class = "point-penalty";
                 var tooltip_cost_class = "tooltip-cost", tooltip_penalty_class = "tooltip-penalty";
                 var popup_load_class ="popup-load", popup_price_class = "popup-price";
@@ -86,7 +89,11 @@ function showResults(csv_file_load, csv_file_price, csv_file_cost, csv_file_sum,
                 drawTable(id_table, type, data_load);
 
                 id_table = "t-price";
-                type = type_price;
+                type = "f";
+                drawTable(id_table, type, data_price);
+
+                id_table = "t-oprice";
+                type = "o";
                 drawTable(id_table, type, data_price);
 
                 var id_heatmap, params, scale_heatmap_x, scale_heatmap_y, scale_heatmap_peak_x;
@@ -110,12 +117,12 @@ function showResults(csv_file_load, csv_file_price, csv_file_cost, csv_file_sum,
 
                 id_graph = "v-load";
                 first_row = loads_fw[0];
-                last_row = loads_fw[loads_fw.length - 1];
+                last_row = loads_fw[loads_fw.length - 2];
                 drawGraph(id_graph, first_row, last_row);
 
                 id_graph = "v-price";
                 first_row = prices[0];
-                last_row = prices[prices.length - 1];
+                last_row = prices[prices.length - 2];
                 drawGraph(id_graph, first_row, last_row);
 
                 var scale_graph_cost_x, scale_graph_cost_y, scale_graph_penalty_y;
@@ -170,6 +177,7 @@ function showResults(csv_file_load, csv_file_price, csv_file_cost, csv_file_sum,
                     if (id_table.includes("-load")) loads_o = arrs;
                     if (id_table.includes("-fwload")) loads_fw = arrs;
                     if (id_table.includes("-price")) prices = arrs;
+                    if (id_table.includes("-oprice")) prices_o = arrs;
                 } // end table
 
                 function drawHeatmap(id_heatmap_div, data, params) {
@@ -297,10 +305,10 @@ function showResults(csv_file_load, csv_file_price, csv_file_cost, csv_file_sum,
 
                     // axis
                     var y_text = "Load (kwh)";
-                    var class_name = graph_load_class;
+                    var class_name = [graph_load_class_expected, graph_load_class_actual];
                     if (id_graph_div.includes("price")) {
                         y_text = "Price (cent)";
-                        class_name = graph_price_class
+                        class_name = [graph_price_class_expected, graph_price_class_actual]
                     }
                     var svg = graph_div.append("svg").attr("width", width_svg).attr("height", height_svg)
                         .append("g").attr("transform", "translate(0, " + height_margin + ")");
@@ -314,6 +322,8 @@ function showResults(csv_file_load, csv_file_price, csv_file_cost, csv_file_sum,
                         .attr("x", width_axis + width_graph / 2).attr("dy", height_axis * 0.6)
                         .style("text-anchor", "middle").text("Periods");
 
+
+
                     var x1, y1 = 0, x2 = 0, y2 = 0, y1_2, y2_2;
 
                     x1 = width_axis;
@@ -321,7 +331,11 @@ function showResults(csv_file_load, csv_file_price, csv_file_cost, csv_file_sum,
                     var line = svg.append("g").attr("transform", "translate(0, " + height_graph + ")");
                     var line2 = svg.append("g").attr("transform", "translate(0, " + height_graph + ")");
                     // line - current iteration
-                    svg.append("g").attr("transform", "translate(0, " + height_graph + ")").attr("class", class_name);
+                    for (var c = 0; c < class_name.length; c ++){
+                        svg.append("g").attr("transform", "translate(0, " + height_graph + ")")
+                            .attr("class", class_name[c]);
+                    }
+
 
                     var range_max = Math.round(Math.max.apply(undefined, first_row) / 10 + 1) * 10;
 
@@ -372,10 +386,15 @@ function showResults(csv_file_load, csv_file_price, csv_file_cost, csv_file_sum,
                             .attr("width", width_legend).attr("height", width_legend).style("fill", "purple");
                         legend2.append("text").attr("x", x + width_legend * 1.5).attr("y", width_legend * 2.3).text("Aftter Optimization");
 
-                        var legend3 = svg.append("g").attr("class", "current-legend").attr("visibility", "hidden");
-                        legend3.append("rect").attr("x", x + width_legend * 8).attr("y", 0)
+                        var legend3 = svg.append("g").attr("class", "current-legend-expected").attr("visibility", "hidden");
+                        legend3.append("rect").attr("x", x + width_legend * 10).attr("y", 0)
                             .attr("width", width_legend).attr("height", width_legend).style("fill", "green");
-                        legend3.append("text").attr("x", x + width_legend * 9.5).attr("y", width_legend * 0.8).text("Current Iteration");
+                        legend3.append("text").attr("x", x + width_legend * 11.5).attr("y", width_legend * 0.8).text("Current Iteration - Expected");
+
+                        var legend4 = svg.append("g").attr("class", "current-legend-expected").attr("visibility", "hidden");
+                        legend4.append("rect").attr("x", x + width_legend * 10).attr("y", width_legend * 1.5)
+                            .attr("width", width_legend).attr("height", width_legend).style("fill", "orange");
+                        legend4.append("text").attr("x", x + width_legend * 11.5).attr("y", width_legend * 2.3).text("Current Iteration - Actual");
                     }
 
                     // y axis line
@@ -526,7 +545,7 @@ function showResults(csv_file_load, csv_file_price, csv_file_cost, csv_file_sum,
                     summary.append("text").attr("x", width_svg - width_summary).attr("y", height_margin * 2 + y_step * 2).text(value3);
                 }
 
-                function drawLine(graph_class, row) {
+                function drawLine(graph_class, row, colour) {
                     var line = d3.select("." + graph_class).html("");
                     var scale_graph_y2;
 
@@ -541,7 +560,7 @@ function showResults(csv_file_load, csv_file_price, csv_file_cost, csv_file_sum,
                         y2 = scale_graph_y2(row[i + 1]);
 
                         line.append("line").attr("x1", x1).attr("x2", x2).attr("y1", y1).attr("y2", y2)
-                            .style("stroke", "green").style("stroke-width", "3");
+                            .style("stroke", colour).style("stroke-width", "3");
                     }
                 }
 
@@ -560,15 +579,18 @@ function showResults(csv_file_load, csv_file_price, csv_file_cost, csv_file_sum,
                 }
 
                 function clearDraw() {
-                    d3.select("." + graph_price_class).html("");
-                    d3.select("." + graph_load_class).html("");
+                    d3.select("." + graph_price_class_actual).html("");
+                    d3.select("." + graph_price_class_expected).html("");
+                    d3.select("." + graph_load_class_actual).html("");
+                    d3.select("." + graph_load_class_expected).html("");
                     d3.select("." + point_cost_class).html("");
                     d3.select("." + point_penalty_class).html("");
                     d3.select("." + tooltip_cost_class).html("");
                     d3.select("." + tooltip_penalty_class).html("");
                     d3.select("." + popup_load_class).html("");
                     d3.select("." + popup_price_class).html("");
-                    d3.selectAll(".current-legend").attr("visibility", "hidden");
+                    d3.selectAll(".current-legend-actual").attr("visibility", "hidden");
+                    d3.selectAll(".current-legend-expected").attr("visibility", "hidden");
 
                     // d3.select("." + "current-legend").html("");
                 }
@@ -580,18 +602,25 @@ function showResults(csv_file_load, csv_file_price, csv_file_cost, csv_file_sum,
                         x0 = Math.floor(scale_heatmap_x.invert(x)),
                     // iteration
                         y0 = Math.floor(scale_heatmap_y.invert(y));
+
+
                     // console.log(x0  + ", " + y0);
 
                     var second_row = loads_fw[y0];
-                    drawLine(graph_load_class, second_row);
-                    second_row = loads_o[y0];
-
-                    drawLine(graph_load_class, second_row);
-                    d3.selectAll(".current-legend").attr("visibility", "visible");
-
+                    var colour = "green";
+                    drawLine(graph_load_class_expected, second_row, colour);
+                    d3.selectAll(".current-legend-expected").attr("visibility", "visible");
 
                     second_row = prices[y0];
-                    drawLine(graph_price_class, second_row);
+                    drawLine(graph_price_class_expected, second_row, colour);
+
+                    second_row = loads_o[y0];
+                    colour = "orange";
+                    drawLine(graph_load_class_actual, second_row, colour);
+                    d3.selectAll(".current-legend-actual").attr("visibility", "visible");
+
+                    second_row = prices_o[y0];
+                    drawLine(graph_price_class_actual, second_row, colour);
 
                     var bill_y, penalty_y, tooltip_x, cost_x = scale_graph_cost_x(y0);
                     bill_y = scale_graph_cost_y(bills[y0]);

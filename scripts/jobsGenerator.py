@@ -100,13 +100,13 @@ def create():
             #     p_start += P.no_intervals_day - 1
 
             # job earliest starting time
-            # e_start = 0
             e_start = r.choice([i for i in range(-duration + 1, p_start + 1)])
+            # e_start = 0
 
             # job latest finish time
+            l_finish = r.choice([i for i in range(p_start - duration + 1, P.no_intervals_day - 1 + duration)])
             # l_finish = P.no_intervals_day - 1
             # l_finish = p_start - 2
-            l_finish = r.choice([i for i in range(p_start - duration + 1, P.no_intervals_day - 1 + duration)])
 
             # job care factor
             care_f = round(r.random(), 1)

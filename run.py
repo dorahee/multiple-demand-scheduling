@@ -1,11 +1,16 @@
 from scripts import jobsGenerator as J, batteriesGenerator as B, pricing as PR, \
-    scheduleJob4 as SJ, aggregateDemands as AD, frankWolfe4 as FW2, \
+    aggregateDemands as AD, frankWolfe4 as FW2, \
     writeResults as WR, inputs as P, computeCosts2 as CC, \
-    readFiles as RF, scheduleBattery2 as SB, computeLookup as CLU
+    readFiles as RF, scheduleBattery2 as SB, computeLookup as CLU, sampleSchedules as SS
 from scripts.inputs import lookup_param, i_bill, i_penalty, interval, \
-    no_intervals_day, no_pricing_periods, no_jobs_min, no_jobs_max, penalty_coefficient, randomization
+    no_intervals_day, no_pricing_periods, no_jobs_min, no_jobs_max, penalty_coefficient, randomization, use_solver
 from time import time
 from sys import argv
+
+if use_solver:
+    from scripts import scheduleJobCP as SJ
+else:
+    from scripts import scheduleJob4 as SJ
 
 if len(argv) > 1:
     P.no_houses = int(argv[1])
@@ -16,9 +21,13 @@ if len(argv) > 2:
 # Generate data
 community = J.main(P.load_data)
 no_houses = len(community)
-demands_short = AD.main(community)
+demands_itr = []
+demands_short, demands_households = AD.main(community)
+demands_itr.append(demands_households)
 lookup_coeff = max(demands_short) * lookup_param
+penalties_itr = []
 total_penalty = 0
+penalties_itr.append([0 for _ in range(no_houses)])
 
 batteries = B.main(P.battery_data)
 no_batteries = len(batteries)
@@ -50,7 +59,7 @@ else:
     lookup_file = ""
     notes = ""
 
-s_loads_houses, s_overview, s_costs, s_lookup, s_demands, s_prices, s_fw \
+s_loads_houses, s_overview, s_costs, s_lookup, s_demands, s_prices, s_fw, sub_dir \
     = WR.prepare(no_houses, no_batteries, no_jobs_max, no_jobs_min,
                  P.max_battery_capacity, P.max_battery_charge, P.max_battery_discharge,
                  lookup_coeff, lookup_file, notes, penalty_coefficient, no_intervals_day,
@@ -63,7 +72,9 @@ t_fw_total = 0
 t_pricing_total = 0
 t_scheduling_total = 0
 counter_fw = -1
-
+prob_dist = []
+s_itr = 0
+itr = 0
 for itr in range(P.no_itrs + 1):
     print "========"
     print "Iteration " + str(itr)
@@ -72,6 +83,9 @@ for itr in range(P.no_itrs + 1):
     # total_cost = CC.main(prices=prices, loads=demands, coefficient=lookup_coeff)
     total_cost = sum([p * d * 0.5 for p, d in zip(prices, demands_short)])
     s_costs += str(itr) + "," + "f," + str(total_cost) + "," + str(total_penalty) + "\r\n"
+
+    WR.append(sub_dir, s_demands, s_costs, s_prices, s_fw)
+    s_costs = ""
 
     if itr == P.no_itrs or counter_fw == 0:
         t_end = time()
@@ -96,6 +110,7 @@ for itr in range(P.no_itrs + 1):
     # scheduling and aggregating demand
     t_scheduling_begin = time()
     counter = 0
+    penalties_households = []
     for household, battery in zip(community, batteries):
         counter += 1
         # print("house id", counter)
@@ -104,8 +119,10 @@ for itr in range(P.no_itrs + 1):
         # for job in household:
         #     job, loads_household = SJ.main(job, prices_long, loads_household)
         #     total_penalty += job[i_penalty]
-
+        total_penalty_pre = total_penalty
         total_penalty = SJ.main(household, prices_long, total_penalty)
+        penalty_per_household = total_penalty - total_penalty_pre
+        penalties_households.append(penalty_per_household)
 
         # scheduling the battery
         # if flag_schedule_battery == 1:
@@ -115,10 +132,15 @@ for itr in range(P.no_itrs + 1):
         #     battery, demands_household = SB.main(battery, sorted_periods[:], demands_household, prices_long)
 
     t_scheduling_total += time() - t_scheduling_begin
+    penalties_itr.append(penalties_households)
 
     # total demand per pricing period
-    demands_short = AD.main(community)
-    s_demands += str(s_itr) + "," + "o," + str(demands_short)[1:-1].replace(" ", "") + "\r\n"
+    demands_short, demands_households = AD.main(community)
+    demands_itr.append(demands_households)
+    prices_actual_short = PR.main(demands_short, lookup_coeff)
+
+    s_demands = str(s_itr) + "," + "o," + str(demands_short)[1:-1].replace(" ", "") + "\r\n"
+    s_prices = str(s_itr) + "," + "o," + str(prices_actual_short)[1:-1].replace(" ", "") + "\r\n"
 
     # frank-Wolfe
     t_fw_begin = time()
@@ -127,10 +149,20 @@ for itr in range(P.no_itrs + 1):
     t_fw_itr = time() - t_fw_begin
     t_fw_total += t_fw_itr
 
+    if prob_dist == []:
+        prob_dist.append(1 - alpha)
+        prob_dist.append(alpha)
+    else:
+        prob_dist = [p_d * (1-alpha) for p_d in prob_dist]
+        prob_dist.append(alpha)
+    # print(prob_dist)
+    # print(len(prob_dist))
+    # print(len(demands_itr))
+
     s_demands += str(s_itr) + "," + "f," + str(demands_short)[1:-1].replace(" ", "") + "\r\n"
     s_prices += str(s_itr) + "," + "f," + str(prices)[1:-1].replace(" ", "") + "\r\n"
     # s_prices += str(s_itr) + "," + "o," + str(prices)[1:-1].replace(" ", "") + "\n"
-    s_fw += str(s_itr) + "," + str(alpha) + ", " + str(t_fw_itr) + "," + str(counter_fw) + "\r\n"
+    s_fw = str(s_itr) + "," + str(alpha) + ", " + str(t_fw_itr) + "," + str(counter_fw) + "\r\n"
 
     # print alpha
     # print counter_fw
@@ -140,5 +172,15 @@ print ""
 print str(t_end - t_begin) + "s"
 
 # Write results to a json file
-WR.main(s_overview, s_demands, s_costs, s_prices, s_fw, s_lookup, s_loads_houses, no_houses,
+WR.final(sub_dir, s_overview, s_demands, s_costs, s_prices, s_fw, s_lookup, s_loads_houses, no_houses,
         P.no_itrs, randomization, no_intervals_day, P.load_data, penalty_coefficient, lookup_param, notes)
+
+
+actual_total_demands_short, prices_short, actual_total_cost = SS.schedule(prob_dist, demands_itr, penalties_itr, lookup_coeff)
+s_fw = ""
+s_demands = str(s_itr + 1) + "," + "o," + str(actual_total_demands_short)[1:-1].replace(" ", "") + "\r\n"
+s_demands += str(s_itr + 1) + "," + "f," + str(actual_total_demands_short)[1:-1].replace(" ", "") + "\r\n"
+s_prices = str(s_itr + 1) + "," + "o," + str(prices_short)[1:-1].replace(" ", "") + "\r\n"
+s_prices += str(s_itr + 1) + "," + "f," + str(prices_short)[1:-1].replace(" ", "") + "\r\n"
+s_costs = str(itr + 1) + "," + "f," + str(actual_total_cost) + "," + str(total_penalty) + "\r\n"
+WR.append(sub_dir, s_demands, s_costs, s_prices, s_fw)

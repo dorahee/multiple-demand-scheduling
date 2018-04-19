@@ -4,9 +4,15 @@ __author__ = 'dora'
 load_data = "read"
 load_data = "create"
 
+use_solver = True
+use_solver = False
+
+show_astart = True
+show_astart = False
+
 # battery_data = "read"
-battery_data = "create"
-# battery_data = "null"
+# battery_data = "create"
+battery_data = "null"
 
 # use_battery = 1
 use_battery = 0
@@ -20,7 +26,7 @@ no_pricing_periods = 48
 interval = no_intervals_day / no_pricing_periods
 
 # 2. Parameters for generating data
-no_houses = 10000
+no_houses = 20000
 no_jobs_min = 5
 no_jobs_max = 5
 i_demand = "demand"
@@ -55,6 +61,9 @@ min_battery_discharge = 5
 max_battery_discharge = 5
 min_battery_remain = 0
 max_battery_remain = min_battery_remain
+
+# 6. result folders
+
 # ------ END: CUSTOMISABLE DATA ------
 
 # ------ BEGIN: DO NOT CHANGE THE FOLLOWING DATA ------
