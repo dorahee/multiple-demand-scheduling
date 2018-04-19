@@ -32,6 +32,7 @@ def evaluate_job(job, price_long, loads):
         price_long = price_long[e_s:l_f + 1]
 
     else:
+
         # if e_s is in the previous day and l_f is in the next day
         if e_s > p_s and p_s + dur - 1 > l_f:
             price_long = price_long + price_long + price_long[0: l_f + 1]

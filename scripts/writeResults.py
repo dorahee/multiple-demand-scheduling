@@ -6,7 +6,7 @@ from shutil import copy, copytree
 def prepare(no_houses, no_batteries, no_jobs_max, no_jobs_min,
             battery_cap, battery_charge, battery_discharge,
             lookup_coeff, lookup_file, notes, penalty_coefficient, no_intervals_day,
-            no_pricing_periods, loads, prices, lookup_base):
+            no_pricing_periods, demands, prices, lookup_base):
     headers_periods = [str(i + 1) for i in range(no_pricing_periods)]
 
     headers = ["house"] + headers_periods
@@ -46,9 +46,9 @@ def prepare(no_houses, no_batteries, no_jobs_max, no_jobs_min,
         s_lookup += rows + "\r\n"
 
     headers = ["itr", "type"] + headers_periods
-    s_loads = str(headers)[1:-1].replace("'", "").replace(" ", "") + "\r\n"
-    s_loads += "0," + "o," + str(loads)[1:-1].replace(" ", "") + "\r\n"
-    s_loads += "0," + "f," + str(loads)[1:-1].replace(" ", "") + "\r\n"
+    s_demands = str(headers)[1:-1].replace("'", "").replace(" ", "") + "\r\n"
+    s_demands += "0," + "o," + str(demands)[1:-1].replace(" ", "") + "\r\n"
+    s_demands += "0," + "f," + str(demands)[1:-1].replace(" ", "") + "\r\n"
 
     s_prices = str(headers)[1:-1].replace("'", "").replace(" ", "") + "\r\n"
     s_prices += "0," + "o," + str(prices)[1:-1].replace(" ", "") + "\r\n"
@@ -57,7 +57,7 @@ def prepare(no_houses, no_batteries, no_jobs_max, no_jobs_min,
     headers = ["itr", "alpha", "fw_itrs_t", "fw_itrs"]
     s_fw = str(headers)[1:-1].replace("'", "").replace(" ", "") + "\r\n"
 
-    return s_loads_houses, s_overview, s_costs, s_lookup, s_loads, s_prices, s_fw
+    return s_loads_houses, s_overview, s_costs, s_lookup, s_demands, s_prices, s_fw
 
 
 def main(s_overview, s_loads, s_costs, s_prices, s_fw, s_lookup, s_loads_houses, h, i, r, t, data, incon, lookup, notes):

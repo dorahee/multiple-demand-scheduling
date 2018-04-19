@@ -2,7 +2,7 @@ from inputs import no_pricing_periods, next_level_difference
 import inputs as P
 
 
-def main(loads, coefficient):
+def main(demands, coefficient):
 
     lookup_base = P.lookup_base
     prices = []
@@ -11,9 +11,9 @@ def main(loads, coefficient):
 
         # version 2 - compute the prices only - the price of the smallest higher consumption level
         next_prices = lookup_base[-1][0]
-        l = loads[p]
+        d = demands[p]
         for row in lookup_base:
-            if int(row[p + 1] * coefficient - l) >= next_level_difference:
+            if int(row[p + 1] * coefficient - d) >= next_level_difference:
                 next_prices = row[0]
                 break
 

@@ -2,10 +2,10 @@ __author__ = 'dora'
 
 # ------ BEGIN: CUSTOMISABLE DATA ------
 load_data = "read"
-# load_data = "create"
+load_data = "create"
 
-battery_data = "read"
-# battery_data = "create"
+# battery_data = "read"
+battery_data = "create"
 # battery_data = "null"
 
 # use_battery = 1
@@ -14,13 +14,13 @@ use_battery = 0
 lookup_base = ""
 
 # 1. Parameters for running the program
-no_itrs = 1000
+no_itrs = 100
 no_intervals_day = 144
 no_pricing_periods = 48
 interval = no_intervals_day / no_pricing_periods
 
 # 2. Parameters for generating data
-no_houses = 1000  #
+no_houses = 10000
 no_jobs_min = 5
 no_jobs_max = 5
 i_demand = "demand"
@@ -44,7 +44,7 @@ minizinc_data = "household.dzn"
 
 # 4. Parameters for computing prices
 lookup_param = 1.0
-next_level_difference = 1
+next_level_difference = 0.001
 
 # 5. Parameters for scheduling batteries
 min_battery_capacity = 12

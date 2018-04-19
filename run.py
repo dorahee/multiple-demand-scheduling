@@ -1,5 +1,5 @@
 from scripts import jobsGenerator as J, batteriesGenerator as B, pricing as PR, \
-    scheduleJobCP as SJ, aggregateLoads as AL, frankWolfe4 as FW2, \
+    scheduleJob4 as SJ, aggregateDemands as AD, frankWolfe4 as FW2, \
     writeResults as WR, inputs as P, computeCosts2 as CC, \
     readFiles as RF, scheduleBattery2 as SB, computeLookup as CLU
 from scripts.inputs import lookup_param, i_bill, i_penalty, interval, \
@@ -16,8 +16,8 @@ if len(argv) > 2:
 # Generate data
 community = J.main(P.load_data)
 no_houses = len(community)
-loads = AL.main(community)
-lookup_coeff = max(loads) * lookup_param
+demands_short = AD.main(community)
+lookup_coeff = max(demands_short) * lookup_param
 total_penalty = 0
 
 batteries = B.main(P.battery_data)
@@ -27,16 +27,17 @@ if P.use_battery == 0:
 
 # lookup_file = ""
 lookup_file = 'files/lookup-0.csv'
-lookup_file = 'files/lookup-0-renew.csv'
+# lookup_file = 'files/lookup-0-renew.csv'
 # lookup_file = 'files/lookup-100-zero-threshold9-flu.csv'
 P.lookup_base = RF.main(lookup_file)
 # region = "sa"
 # lookup_file= region
 # P.lookup_base = CLU.main(region, P.no_pricing_periods)
-prices = PR.main(loads, lookup_coeff)
+prices = PR.main(demands_short, lookup_coeff)
 
 # -------------------- Meta data of this experiment --------------------
-print str(no_houses) + " houses, " + str(no_jobs_min) + " ~ " + str(no_jobs_max) + " jobs per house, " + str(no_batteries) + " batteries."
+print str(no_houses) + " houses, " + str(no_jobs_min) + " ~ " + str(no_jobs_max) + " jobs per house, " \
+      + str(no_batteries) + " batteries."
 print str(no_intervals_day) + " scheduling periods, " + str(no_pricing_periods) + " pricing periods, "
 # print str(P.no_itrs) + " iterations"
 # print "---------------"
@@ -49,11 +50,11 @@ else:
     lookup_file = ""
     notes = ""
 
-s_loads_houses, s_overview, s_costs, s_lookup, s_loads, s_prices, s_fw \
+s_loads_houses, s_overview, s_costs, s_lookup, s_demands, s_prices, s_fw \
     = WR.prepare(no_houses, no_batteries, no_jobs_max, no_jobs_min,
                  P.max_battery_capacity, P.max_battery_charge, P.max_battery_discharge,
                  lookup_coeff, lookup_file, notes, penalty_coefficient, no_intervals_day,
-                 no_pricing_periods, loads, prices, P.lookup_base)
+                 no_pricing_periods, demands_short, prices, P.lookup_base)
 
 # -------------------- Meta data of this experiment --------------------
 
@@ -68,7 +69,8 @@ for itr in range(P.no_itrs + 1):
     print "Iteration " + str(itr)
 
     # computing the total electricity cost
-    total_cost = CC.main(prices=prices, loads=loads, coefficient=lookup_coeff)
+    # total_cost = CC.main(prices=prices, loads=demands, coefficient=lookup_coeff)
+    total_cost = sum([p * d * 0.5 for p, d in zip(prices, demands_short)])
     s_costs += str(itr) + "," + "f," + str(total_cost) + "," + str(total_penalty) + "\r\n"
 
     if itr == P.no_itrs or counter_fw == 0:
@@ -86,9 +88,9 @@ for itr in range(P.no_itrs + 1):
 
     # start new iteration
     s_itr = itr + 1
-    loads_pre = loads[:]
+    demands_short_pre = demands_short[:]
     total_penalty_pre = total_penalty
-    loads = [0] * no_intervals_day
+    demands_long = [0] * no_intervals_day
     total_penalty = 0
 
     # scheduling and aggregating demand
@@ -103,32 +105,29 @@ for itr in range(P.no_itrs + 1):
         #     job, loads_household = SJ.main(job, prices_long, loads_household)
         #     total_penalty += job[i_penalty]
 
-        total_penalty, loads_household = SJ.main(household, prices_long, total_penalty)
+        total_penalty = SJ.main(household, prices_long, total_penalty)
 
         # scheduling the battery
-        if flag_schedule_battery == 1:
-            if itr == 0:
-                battery['energy'] = [battery['min']] * P.no_intervals_day
-                battery['activities'] = [0] * P.no_intervals_day
-            battery, loads_household = SB.main(battery, sorted_periods[:], loads_household, prices_long)
+        # if flag_schedule_battery == 1:
+        #     if itr == 0:
+        #         battery['energy'] = [battery['min']] * P.no_intervals_day
+        #         battery['activities'] = [0] * P.no_intervals_day
+        #     battery, demands_household = SB.main(battery, sorted_periods[:], demands_household, prices_long)
 
-        # aggregating loads
-        loads = [x + y for x, y in zip(loads, loads_household)]
-        p
     t_scheduling_total += time() - t_scheduling_begin
 
     # total demand per pricing period
-    loads = [sum([loads[i + j] for j in xrange(interval)]) for i in xrange(no_intervals_day) if i % interval == 0]
-    s_loads += str(s_itr) + "," + "o," + str(loads)[1:-1].replace(" ", "") + "\r\n"
+    demands_short = AD.main(community)
+    s_demands += str(s_itr) + "," + "o," + str(demands_short)[1:-1].replace(" ", "") + "\r\n"
 
     # frank-Wolfe
     t_fw_begin = time()
-    loads, prices, total_penalty, alpha, counter_fw = \
-        FW2.main(loads, loads_pre, prices, total_penalty, total_penalty_pre, lookup_coeff)
+    demands_short, prices, total_penalty, alpha, counter_fw = \
+        FW2.main(demands_short, demands_short_pre, prices, total_penalty, total_penalty_pre, lookup_coeff)
     t_fw_itr = time() - t_fw_begin
     t_fw_total += t_fw_itr
 
-    s_loads += str(s_itr) + "," + "f," + str(loads)[1:-1].replace(" ", "") + "\r\n"
+    s_demands += str(s_itr) + "," + "f," + str(demands_short)[1:-1].replace(" ", "") + "\r\n"
     s_prices += str(s_itr) + "," + "f," + str(prices)[1:-1].replace(" ", "") + "\r\n"
     # s_prices += str(s_itr) + "," + "o," + str(prices)[1:-1].replace(" ", "") + "\n"
     s_fw += str(s_itr) + "," + str(alpha) + ", " + str(t_fw_itr) + "," + str(counter_fw) + "\r\n"
@@ -141,5 +140,5 @@ print ""
 print str(t_end - t_begin) + "s"
 
 # Write results to a json file
-WR.main(s_overview, s_loads, s_costs, s_prices, s_fw, s_lookup, s_loads_houses, no_houses,
+WR.main(s_overview, s_demands, s_costs, s_prices, s_fw, s_lookup, s_loads_houses, no_houses,
         P.no_itrs, randomization, no_intervals_day, P.load_data, penalty_coefficient, lookup_param, notes)

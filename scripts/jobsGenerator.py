@@ -46,7 +46,7 @@ def read():
 def create():
     p_d = P.prob
     p_d_short = p_d[1]
-    l_consumption = P.devices
+    l_demands = P.devices
 
     p_d_long = []
     for i in xrange(len(p_d_short) - 1):
@@ -84,7 +84,7 @@ def create():
             name = str(counter_j)
 
             # job consumption per hour
-            consumption = r.choice(l_consumption)
+            demand = r.choice(l_demands)
 
             # job duration
             seed = r.uniform(p_d_min, p_d_max)
@@ -116,7 +116,7 @@ def create():
 
             # job instance
             job['name'] = name
-            job['demand'] = consumption
+            job['demand'] = demand
             job['estart'] = e_start
             job['pstart'] = p_start
             job['lfinish'] = l_finish
@@ -124,19 +124,21 @@ def create():
             job['caf'] = care_f
             job['astart'] = p_start
 
-            s_household += str(counter_h) + "," + name + "," + str(consumption) + "," + str(e_start) + "," \
+            s_household += str(counter_h) + "," + name + "," + str(demand) + "," + str(e_start) + "," \
                          + str(p_start) + "," + str(l_finish) + "," + str(duration) + "," + str(care_f) + "," \
                            + str(p_start)
 
-            if r.choice([True, False]):
+            if r.choice([True, False]) and counter_j > 0:
                 id_predecessor_set = [i for i in range(counter_j)]
                 id_predecessor = r.choice(id_predecessor_set)
                 job['predecessor'] = id_predecessor
+                s_household += "," + str(id_predecessor)
 
                 delay = 0 if household[id_predecessor]['dur'] + job['dur'] >= P.no_intervals_day \
                     else r.randint(0, P.no_intervals_day - household[id_predecessor]['dur'] - job['dur'] - 1)
+                delay = 144
                 job['max-succeeding-delay'] = delay
-                s_household += "," + str(id_predecessor) + "," + str(delay)
+                s_household += "," + str(delay)
 
                 # while household[id_predecessor]['pstart'] - job['pstart']:
                 #     id_predecessor_set.remove(id_predecessor)

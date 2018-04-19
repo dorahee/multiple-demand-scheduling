@@ -1,5 +1,5 @@
 from scripts import jobsGenerator as J, batteriesGenerator as B, pricing as PR, \
-    scheduleJob3 as SJ, aggregateLoads as AL, frankWolfe4 as FW2, \
+    scheduleJob3 as SJ, aggregateDemands as AL, frankWolfe4 as FW2, \
     writeResults as WR, inputs as P, computeCosts2 as CC, \
     readFiles as RF, scheduleBattery2 as SB
 from scripts.inputs import lookup_param, i_bill, i_penalty, interval, \
