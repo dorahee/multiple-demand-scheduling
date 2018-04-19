@@ -5,3 +5,6 @@ analysis/*
 *.DS_Store
 others/*
 *.csv
+*.xml
+*.iml
+.idea/*
