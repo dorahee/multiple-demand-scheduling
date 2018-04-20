@@ -2,7 +2,7 @@
 # Version 3 uses a for loop to find the cheapest time slot, instead of using the list comprehension
 
 from inputs import no_intervals_day, penalty_coefficient, \
-    i_pstart, i_astart, i_estart, i_dur, i_lfinish, i_caf, i_demand, i_bill, i_penalty, show_astart
+    i_pstart, i_astart, i_estart, i_dur, i_lfinish, i_caf, i_demand, i_bill, i_penalty, show_astart, i_predecessor
 from time import time
 
 
@@ -21,7 +21,7 @@ def main(household, prices_long, total_penalty):
     for job in household:
         job_durations.append(job[i_dur])
         job_demands.append(int(job[i_demand] * 1000))
-        job = evaluate_job(job, prices_long)
+        job = evaluate_job(job, prices_long, household[:])
         total_penalty += job[i_penalty]
         # print(job[i_penalty])
 
@@ -31,7 +31,7 @@ def main(household, prices_long, total_penalty):
     return total_penalty
 
 
-def evaluate_job(job, price_long):
+def evaluate_job(job, price_long, household):
 
     e_s = job[i_estart]
     p_s = job[i_pstart]
@@ -39,6 +39,12 @@ def evaluate_job(job, price_long):
     l_f = job[i_lfinish]
     caf = job[i_caf]
     demand = job[i_demand]
+
+    if i_predecessor in job.keys():
+        prec = job[i_predecessor]
+        prec_astart = household[prec][i_astart]
+        prec_dur = household[prec][i_dur]
+        e_s = max(e_s, prec_astart + prec_dur)
 
     big_num = 999 * max(price_long)
     p_s_cp = p_s + dur - 1
