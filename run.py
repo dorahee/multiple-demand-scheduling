@@ -7,16 +7,22 @@ from scripts.inputs import lookup_param, i_bill, i_penalty, interval, \
 from time import time
 from sys import argv
 
-if use_solver:
-    from scripts import scheduleJobCP as SJ
-else:
-    from scripts import scheduleJob4 as SJ
-
 if len(argv) > 1:
     P.no_houses = int(argv[1])
 
 if len(argv) > 2:
-    P.no_itrs = int(argv[2])
+    if argv[2] == "True":
+        P.use_solver = True
+    else:
+        P.use_solver = False
+
+if len(argv) > 3:
+    P.load_data = str(argv[3])
+
+if P.use_solver:
+    from scripts import scheduleJobCP as SJ
+else:
+    from scripts import scheduleJob4 as SJ
 
 # Generate data
 community = J.main(P.load_data)
@@ -48,6 +54,7 @@ prices = PR.main(demands_short, lookup_coeff)
 print str(no_houses) + " houses, " + str(no_jobs_min) + " ~ " + str(no_jobs_max) + " jobs per house, " \
       + str(no_batteries) + " batteries."
 print str(no_intervals_day) + " scheduling periods, " + str(no_pricing_periods) + " pricing periods, "
+print "use solver - " + str(P.use_solver)
 # print str(P.no_itrs) + " iterations"
 # print "---------------"
 

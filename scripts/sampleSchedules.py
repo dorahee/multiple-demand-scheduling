@@ -5,6 +5,7 @@ from scripts import pricing as PR
 
 def schedule(prob_dist, demands_itr, penalties_itr, lookup_coeff):
     total_itrs = len(demands_itr)
+    no_houses = len(demands_itr[0])
     selction_households = choice(total_itrs, no_houses, p=prob_dist)
     # print(selction_households)
     # print (prob_dist)
