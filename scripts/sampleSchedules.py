@@ -13,10 +13,10 @@ def schedule(prob_dist, demands_itr, penalties_itr, lookup_coeff):
     # print(actual_costs)
     actual_demands = [demands_itr[selction_households[h]][h] for h in range(no_houses)]
 
-    actual_total_penalty = max(actual_penalties)
+    actual_total_penalty = sum(actual_penalties)
     actual_total_demands = [sum([actual_demands[h][t] for h in range(no_houses)]) for t in range(no_intervals_day)]
-    actual_total_demands_short = [max([actual_total_demands[i + j] for j in xrange(interval)])
-                            for i in xrange(0, no_intervals_day, interval)]
+    actual_total_demands_short = [sum([actual_total_demands[i + j] for j in xrange(interval)]) / interval
+                                  for i in xrange(0, no_intervals_day, interval)]
     prices_short = PR.main(actual_total_demands_short, lookup_coeff)
     actual_total_cost = sum([p * d * 0.5 for p, d in zip(prices_short, actual_total_demands_short)])
     actual_max_demand = max(actual_total_demands_short)

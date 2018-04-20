@@ -4,11 +4,11 @@ __author__ = 'dora'
 load_data = "read"
 load_data = "create"
 
-use_solver = True
 use_solver = False
+use_solver = True
 
-show_astart = True
 show_astart = False
+# show_astart = True
 
 # battery_data = "read"
 # battery_data = "create"
@@ -26,7 +26,7 @@ no_pricing_periods = 48
 interval = no_intervals_day / no_pricing_periods
 
 # 2. Parameters for generating data
-no_houses = 20000
+no_houses = 10000
 no_jobs_min = 5
 no_jobs_max = 5
 i_demand = "demand"

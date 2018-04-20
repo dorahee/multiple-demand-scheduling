@@ -126,13 +126,13 @@ def solve_gurobi(costs_matrix, job_demands, job_durations, num_precedences, pred
     # for t in INTERVALS:
     #     m.addConstr(sum([devices[i][t] * job_demands[i] for i in DEVICES]) <= max_demand)
     #
-    # for p in PREC:
-    #     pre = predecessors[p] - 1
-    #     succ = successors[p] - 1
+    for p in PREC:
+        pre = predecessors[p] - 1
+        succ = successors[p] - 1
         # d = prec_delays[p]
 
-        # m.addConstr(sum([devices[pre][t] * t for t in INTERVALS]) + job_durations[pre]
-        #             <= sum([devices[succ][t] * t for t in INTERVALS]))
+        m.addConstr(sum([devices[pre][t] * t for t in range(len(costs_matrix[pre]))]) + job_durations[pre]
+                    <= sum([devices[succ][t] * t for t in range(len(costs_matrix[succ]))]))
                     # <= sum([devices[pre][t] * t for t in INTERVALS]) + job_durations[pre] + d)
 
     m.setObjective(sum([sum([devices[i][t] * costs_matrix[i][t] for t in range(len(costs_matrix[i]))])
