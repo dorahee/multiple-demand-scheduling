@@ -21,7 +21,7 @@ def main(household, prices_long, total_penalty):
     predecessors = []
     successors = []
     prec_delays = []
-    percent = 0.7
+    percent = 1
 
     for job in household:
         job_durations.append(job[i_dur])
@@ -32,7 +32,7 @@ def main(household, prices_long, total_penalty):
             num_precedences += 1
             predecessors.append(job[i_predecessor] + 1)
             successors.append(int(job[i_name]) + 1)
-            # prec_delays.append(job[i_succeeding_delay])
+            prec_delays.append(job[i_succeeding_delay])
 
     # minizinc
     # job_astarts = solve_minizinc(costs_matrix, job_demands, job_durations, num_precedences, predecessors,
@@ -110,7 +110,7 @@ def solve_gurobi(costs_matrix, job_demands, job_durations, num_precedences, pred
     devices = []
     DEVICES = range(len(costs_matrix))
     PREC = range(num_precedences)
-    max_demand = int(sum(job_demands) * percent)
+    max_demand = int(sum(job_demands) * percent) + 999999
 
     for i in DEVICES:
         d_times = []
@@ -123,17 +123,17 @@ def solve_gurobi(costs_matrix, job_demands, job_durations, num_precedences, pred
     # for _ in DEVICES:
     #     d_t = m.addVar(INTERVALS, vtype=GRB.INTEGER)
 
-    # for t in INTERVALS:
-    #     m.addConstr(sum([devices[i][t] * job_demands[i] for i in DEVICES]) <= max_demand)
+    for t in range(no_intervals_day):
+        m.addConstr(sum([devices[i][t] * job_demands[i] for i in DEVICES]) <= max_demand)
     #
     for p in PREC:
         pre = predecessors[p] - 1
         succ = successors[p] - 1
-        # d = prec_delays[p]
+        d = prec_delays[p]
 
         m.addConstr(sum([devices[pre][t] * t for t in range(len(costs_matrix[pre]))]) + job_durations[pre]
-                    <= sum([devices[succ][t] * t for t in range(len(costs_matrix[succ]))]))
-                    # <= sum([devices[pre][t] * t for t in INTERVALS]) + job_durations[pre] + d)
+                    <= sum([devices[succ][t] * t for t in range(len(costs_matrix[succ]))])
+                    <= sum([devices[pre][t] * t for t in range(len(costs_matrix[pre]))]) + job_durations[pre] + d)
 
     m.setObjective(sum([sum([devices[i][t] * costs_matrix[i][t] for t in range(len(costs_matrix[i]))])
                         for i in DEVICES]), GRB.MINIMIZE)

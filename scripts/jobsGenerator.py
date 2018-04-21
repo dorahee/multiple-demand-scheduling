@@ -101,11 +101,11 @@ def create():
 
             # job earliest starting time
             e_start = r.choice([i for i in range(-duration + 1, p_start + 1)])
-            # e_start = 0
+            e_start = 0
 
             # job latest finish time
             l_finish = r.choice([i for i in range(p_start - duration + 1, P.no_intervals_day - 1 + duration)])
-            # l_finish = P.no_intervals_day - 1
+            l_finish = P.no_intervals_day - 1
             # l_finish = p_start - 2
 
             # job care factor
@@ -136,7 +136,7 @@ def create():
 
                 delay = 0 if household[id_predecessor]['dur'] + job['dur'] >= P.no_intervals_day \
                     else r.randint(0, P.no_intervals_day - household[id_predecessor]['dur'] - job['dur'] - 1)
-                delay = 144
+                # delay = 144
                 job['max-succeeding-delay'] = delay
                 s_household += "," + str(delay)
 

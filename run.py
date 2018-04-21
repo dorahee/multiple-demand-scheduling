@@ -55,7 +55,7 @@ print str(no_houses) + " houses, " + str(no_jobs_min) + " ~ " + str(no_jobs_max)
 print str(no_intervals_day) + " scheduling periods, " + str(no_pricing_periods) + " pricing periods, "
 print "use solver - " + str(P.use_solver)
 # print str(P.no_itrs) + " iterations"
-# print "---------------"
+print "---------------"
 
 if not lookup_file == "":
     lookup_file = lookup_file
