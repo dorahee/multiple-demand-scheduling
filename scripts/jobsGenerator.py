@@ -21,7 +21,7 @@ def convert(s):
 
 
 def read():
-    with open("jobs.csv", mode='r') as file:
+    with open(P.jobs_file, mode='r') as file:
         csv_reader = reader(file)
         headers = [h.strip(" \'") for h in csv_reader.next()]
         del headers[0]
@@ -38,7 +38,7 @@ def read():
         community.append(household)
 
     # community = community_json
-    print "Job data is read."
+    print "Job data is read from {}.".format(P.jobs_file)
 
     return community
 
@@ -164,9 +164,9 @@ def create():
         s_community += s_household
         # community.aggregated_loads = [x + y for x, y in zip(community.aggregated_loads, household.aggregated_loads)]
 
-    with open('jobs.csv', 'wb') as output_file:
+    with open(P.jobs_file, 'wb') as output_file:
         output_file.write(s_community)
-    print "Job data is generated."
+    print "Job data is generated and saved to {}.".format(P.jobs_file)
 
     return community
 

@@ -26,5 +26,7 @@ def schedule(prob_dist, demands_itr, penalties_itr, lookup_coeff):
     # print("actual total demands", actual_total_demands_short)
     print("actual total costs", actual_total_cost)
     print("actual total penalty", actual_total_penalty)
+    print("Done sampling. ")
+    print("\n")
 
     return actual_total_demands_short, prices_short, actual_total_cost

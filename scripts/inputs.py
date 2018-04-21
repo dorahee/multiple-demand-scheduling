@@ -62,7 +62,9 @@ max_battery_discharge = 5
 min_battery_remain = 0
 max_battery_remain = min_battery_remain
 
-# 6. result folders
+# 6. default result folders and files
+jobs_file = "jobs.csv"
+batteries_file = "batteries.csv"
 
 # ------ END: CUSTOMISABLE DATA ------
 

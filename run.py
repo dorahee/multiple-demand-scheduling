@@ -7,17 +7,16 @@ from scripts.inputs import lookup_param, i_bill, i_penalty, interval, \
 from time import time
 from sys import argv
 
-if len(argv) > 1:
-    P.no_houses = int(argv[1])
-
-if len(argv) > 2:
-    if argv[2] == "True":
-        P.use_solver = True
-    else:
-        P.use_solver = False
-
-if len(argv) > 3:
-    P.load_data = str(argv[3])
+if "-no_houses" in argv:
+    P.no_houses = int(argv[argv.index("-no_houses") + 1])
+if "-use_solver" in argv:
+    P.use_solver = False if "False" in argv[argv.index("-use_solver") + 1] else True
+if "-c" in argv:
+    P.load_data = "create"
+if "-r" in argv:
+    P.load_data = "read"
+if "-jobs_file" in argv:
+    P.jobs_file = argv[argv.index("-jobs_file") + 1]
 
 if P.use_solver:
     from scripts import scheduleJobCP as SJ
