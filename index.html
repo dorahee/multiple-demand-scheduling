@@ -197,6 +197,8 @@
                                 <select class="form-control" id="selectionDropdownDate"></select>
                                 <select class="form-control" id="selectionDropdownTime"></select>
                                 <button type="button" class="btn btn-default" id="go_btn">Show</button>
+                                <button type="button" class="btn btn-default" id="show_prev_btn"><<</button>
+                                <button type="button" class="btn btn-default" id="show_next_btn">>></button>
                             </div>
                         </form> 
 
@@ -244,6 +246,8 @@
         var $dropDownDate = $("#selectionDropdownDate");
         var $dropDownTime = $("#selectionDropdownTime");
         var $goBtn = $("#go_btn");
+        var $nextBtn = $("#show_next_btn");
+        var $prevBtn = $("#show_prev_btn");
 
         $.get("/dates", function (dates) {
             dates.forEach(function (d) {
@@ -274,6 +278,20 @@
             var tab_active = $('.nav-pills .active a').attr("href");
             showData(file_path2, tab_active);
             // show_simulation(file_path, file_path_backup);
+        }
+
+        $nextBtn.click(theNextGenMagic);
+        $prevBtn.click(thePrevGenMagic);
+        function theNextGenMagic() {
+            var nextIndex = $dropDownTime.prop('selectedIndex') + 1;
+            $dropDownTime.prop('selectedIndex', nextIndex < $dropDownTime.find('option').length ? nextIndex : nextIndex - 1);
+            magic();
+        }
+
+        function thePrevGenMagic() {
+            var prevIndex = $dropDownTime.prop('selectedIndex') - 1;
+            $dropDownTime.prop('selectedIndex', prevIndex >= 0 ? prevIndex : nextIndex + 1);
+            magic();
         }
     });
 </script>
