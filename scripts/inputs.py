@@ -7,6 +7,8 @@ load_data = "read"
 use_solver = False
 # use_solver = True
 
+use_globals = True
+
 show_astart = False
 # show_astart = True
 

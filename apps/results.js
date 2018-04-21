@@ -64,6 +64,7 @@ function showResults(csv_file_load, csv_file_price, csv_file_cost, csv_file_sum,
                 content += data_sum[0]["batteries"] + " batteries" + whitespace;
                 // if (data_sum[0]["batteries"] != 0) content += "no batteries" + whitespace;
                 content += parseFloat(data_sum[0]["time"]).toFixed(2) + "s" + " run time" + whitespace;
+                content += "consider global constraints" + whitespace + data_sum[0]["use_globals"] + whitespace;
 
                 var no_iters = data_load[data_load.length - 1]["itr"];
                 var keys = Object.keys(data_load[0]);

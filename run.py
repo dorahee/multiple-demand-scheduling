@@ -18,6 +18,9 @@ if "-r" in argv:
 if "-jobs_file" in argv:
     P.jobs_file = argv[argv.index("-jobs_file") + 1]
 
+if "-ignore_globals" in argv:
+    P.use_globals = False
+
 if P.use_solver:
     from scripts import scheduleJobCP as SJ
 else:
@@ -96,7 +99,7 @@ for itr in range(P.no_itrs + 1):
     if itr == P.no_itrs or counter_fw == 0:
         t_end = time()
         s_overview += str(t_end - t_begin) + "," + str(t_fw_total) + "," + str(t_pricing_total) + "," \
-                      + str(t_scheduling_total) + "\r\n"
+                      + str(t_scheduling_total) + "," + str(itr) + "," + str(P.use_globals) + "\r\n"
         break
 
     # pricing

@@ -15,7 +15,7 @@ def prepare(no_houses, no_batteries, no_jobs_max, no_jobs_min,
     headers = ["households", "batteries", "maxJobs", "minJobs",
                "battery_cap", "battery_charge", "battery_discharge",
                "lookupf", "lookupfile", "notes", "unhappinessf", "schedulingp",
-               "time", "fw_time", "pricing_time", "scheduling_time", "convergence"]
+               "time", "fw_time", "pricing_time", "scheduling_time", "convergence", "use_globals"]
     s_overview = str(headers)[1:-1].replace("'", "").replace(" ", "") + "\r\n"
 
     # if not lookup_file == "":
@@ -27,9 +27,8 @@ def prepare(no_houses, no_batteries, no_jobs_max, no_jobs_min,
     #     notes = ""
 
     s_overview += str(no_houses) + "," + str(no_batteries) + "," + str(no_jobs_max) + "," + str(
-        no_jobs_min) + "," + str(lookup_coeff) + "," \
-                  + str(lookup_file) + "," + str(notes) + "," + str(penalty_coefficient) + "," + str(
-        no_intervals_day) + ","
+        no_jobs_min) + "," + str(battery_cap) + "," + str(battery_charge) + "," + str(battery_discharge) + "," + str(lookup_coeff) + "," \
+                  + str(lookup_file) + "," + str(notes) + "," + str(penalty_coefficient) + "," + str(no_intervals_day) + ","
 
     headers = ["itr", "type", "tbill", "tpenalty"]
     s_costs = str(headers)[1:-1].replace("'", "").replace(" ", "") + "\r\n"

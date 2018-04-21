@@ -1,7 +1,7 @@
 # Version 2 combines scheduling and aggregating loads together
 # Version 3 uses a for loop to find the cheapest time slot, instead of using the list comprehension
 
-from inputs import no_intervals_day, penalty_coefficient, i_name, \
+from inputs import no_intervals_day, penalty_coefficient, i_name, use_globals, \
     i_pstart, i_astart, i_estart, i_dur, i_lfinish, i_caf, i_demand, i_bill, i_penalty, show_astart, i_predecessor, i_succeeding_delay
 from time import time
 from aggregateDemands import aggregate_household
@@ -44,7 +44,7 @@ def evaluate_job(job, price_long, household, max_demand):
     demand = job[i_demand]
     id = int(job[i_name])
 
-    if i_predecessor in job.keys():
+    if i_predecessor in job.keys() and use_globals is True:
         prec = job[i_predecessor]
         prec_astart = household[prec][i_astart]
         prec_dur = household[prec][i_dur]
@@ -85,27 +85,35 @@ def evaluate_job(job, price_long, household, max_demand):
     penalties = [abs(p_s_cp - i) * caf * penalty_coefficient for i in INTERVALS]
     costs_job = [x + y for x, y in zip(bills, penalties)]
 
-    if id > 0:
-        current_demands_household = aggregate_household(household[:id])
-    else:
-        current_demands_household = [0] * no_intervals_day
-    DONE = False
-    while DONE is False:
-        min_cost = min(costs_job)
-        min_cost_indices = [i for i, x in enumerate(costs_job) if x == min_cost]
-        # print(min_cost_indices)
+    min_cost = min(costs_job)
+    min_cost_indices = [i for i, x in enumerate(costs_job) if x == min_cost]
+    # print(min_cost_indices)
 
-        chosen_index = min_cost_indices[0]
-        actual_start = (chosen_index - dur + 1) % no_intervals_day
+    chosen_index = min_cost_indices[0]
+    actual_start = (chosen_index - dur + 1) % no_intervals_day
 
-        current_demands_household2 = current_demands_household[:]
-        for d in range(dur):
-            current_demands_household2[(actual_start + d) % no_intervals_day] += demand
-        if max(current_demands_household2) <= max_demand or len(min_cost_indices) == 1:
-            DONE = True
-            break
+    if use_globals:
+        if id > 0:
+            current_demands_household = aggregate_household(household[:id])
         else:
-            costs_job[actual_start] += 99999
+            current_demands_household = [0] * no_intervals_day
+        
+        DONE = False
+        while DONE is False:
+            current_demands_household2 = current_demands_household[:]
+            for d in range(dur):
+                current_demands_household2[(actual_start + d) % no_intervals_day] += demand
+            if max(current_demands_household2) <= max_demand or len(min_cost_indices) == 1:
+                DONE = True
+                break
+            else:
+                costs_job[actual_start] += 99999
+                min_cost = min(costs_job)
+                min_cost_indices = [i for i, x in enumerate(costs_job) if x == min_cost]
+                # print(min_cost_indices)
+
+                chosen_index = min_cost_indices[0]
+                actual_start = (chosen_index - dur + 1) % no_intervals_day
 
 
     # for i in xrange(len(price_long) - dur + 1):
@@ -121,7 +129,6 @@ def evaluate_job(job, price_long, household, max_demand):
 
     job[i_bill] = sum(price_long_cp[chosen_index: chosen_index + dur]) * load_per_scheduling_period
     job[i_penalty] = penalties[chosen_index]
-    
     job[i_astart] = actual_start
 
     # print str(time() - t_begin) + "s"
