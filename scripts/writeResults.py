@@ -89,7 +89,7 @@ def append(sub_dir, s_demands, s_costs, s_prices, s_fw):
 
 
 def final(sub_dir, s_overview, s_loads, s_costs, s_prices, s_fw, s_lookup,
-          s_loads_houses, h, i, r, t, data, incon, lookup, notes):
+          s_loads_houses, h, i, r, t, data, incon, lookup, notes, jobs_file):
 
     file_name = "overview.csv"
     with open(sub_dir + file_name, 'wb') as output_file:
@@ -119,7 +119,7 @@ def final(sub_dir, s_overview, s_loads, s_costs, s_prices, s_fw, s_lookup,
     with open(sub_dir + file_name, 'wb') as output_file:
         output_file.write(notes)
 
-    copy("jobs.csv", sub_dir)
+    copy(jobs_file, sub_dir)
     copy("batteries.csv", sub_dir)
 
     print "Results data is written."

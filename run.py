@@ -58,6 +58,7 @@ print str(no_houses) + " houses, " + str(no_jobs_min) + " ~ " + str(no_jobs_max)
 print str(no_intervals_day) + " scheduling periods, " + str(no_pricing_periods) + " pricing periods, "
 print "use solver - " + str(P.use_solver)
 # print str(P.no_itrs) + " iterations"
+print "consider globals -" + str(P.use_globals)
 print "---------------"
 
 if not lookup_file == "":
@@ -182,10 +183,10 @@ print str(t_end - t_begin) + "s"
 
 # Write results to a json file
 WR.final(sub_dir, s_overview, s_demands, s_costs, s_prices, s_fw, s_lookup, s_loads_houses, no_houses,
-        P.no_itrs, randomization, no_intervals_day, P.load_data, penalty_coefficient, lookup_param, notes)
+        P.no_itrs, randomization, no_intervals_day, P.load_data, penalty_coefficient, lookup_param, notes, P.jobs_file)
 
 
-actual_total_demands_short, prices_short, actual_total_cost = SS.schedule(prob_dist, demands_itr, penalties_itr, lookup_coeff)
+actual_total_demands_short, prices_short, actual_total_cost = SS.schedule(prob_dist, demands_itr, penalties_itr, lookup_coeff, sub_dir)
 s_fw = ""
 s_demands = str(s_itr + 1) + "," + "o," + str(actual_total_demands_short)[1:-1].replace(" ", "") + "\r\n"
 s_demands += str(s_itr + 1) + "," + "f," + str(actual_total_demands_short)[1:-1].replace(" ", "") + "\r\n"
