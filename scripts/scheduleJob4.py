@@ -115,7 +115,6 @@ def evaluate_job(job, price_long, household, max_demand):
                 chosen_index = min_cost_indices[0]
                 actual_start = (chosen_index - dur + 1) % no_intervals_day
 
-
     # for i in xrange(len(price_long) - dur + 1):
     #     bill = sum(price_long[i: i + dur]) * load_per_scheduling_period
     #     penalty = abs(i - p_s) * caf * penalty_coefficient
