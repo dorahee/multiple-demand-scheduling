@@ -1,5 +1,5 @@
 import random as r
-import inputs as P
+import scripts.inputs as P
 from csv import reader
 
 
@@ -28,7 +28,7 @@ def read():
             del row[0]
             battery = {h: convert(i) for h, i in zip(headers, row)}
             community_batteries.append(battery)
-    print "Batteries data is read."
+    print("Batteries data is read.")
 
     return community_batteries
 
@@ -37,7 +37,7 @@ def create():
     attributes = ["noh", "capacity", "charge", "discharge", "min"]
     s_batteries = str(attributes)[1:-1].replace("'", "").replace(" ", "") + "\r\n"
     community_batteries = []
-    for counter_h in xrange(P.no_houses):
+    for counter_h in range(P.no_houses):
         battery = dict()
 
         capacity = r.randint(P.min_battery_capacity, P.max_battery_capacity)
@@ -62,9 +62,9 @@ def create():
 
         community_batteries.append(battery)
 
-    with open('batteries.csv', 'wb') as output_file:
+    with open('batteries.csv', 'w') as output_file:
             output_file.write(s_batteries)
-    print "Batteries data is generated."
+    print("Batteries data is generated.")
 
     return community_batteries
 

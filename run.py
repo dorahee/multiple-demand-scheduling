@@ -53,13 +53,13 @@ P.lookup_base = RF.main(lookup_file)
 prices = PR.main(demands_short, lookup_coeff)
 
 # -------------------- Meta data of this experiment --------------------
-print str(no_houses) + " houses, " + str(no_jobs_min) + " ~ " + str(no_jobs_max) + " jobs per house, " \
-      + str(no_batteries) + " batteries."
-print str(no_intervals_day) + " scheduling periods, " + str(no_pricing_periods) + " pricing periods, "
-print "use solver - " + str(P.use_solver)
+print(str(no_houses) + " houses, " + str(no_jobs_min) + " ~ " + str(no_jobs_max) + " jobs per house, " \
+      + str(no_batteries) + " batteries.")
+print(str(no_intervals_day) + " scheduling periods, " + str(no_pricing_periods) + " pricing periods, ")
+print("use solver - " + str(P.use_solver))
 # print str(P.no_itrs) + " iterations"
-print "consider globals -" + str(P.use_globals)
-print "---------------"
+print("consider globals -" + str(P.use_globals))
+print("---------------")
 
 if not lookup_file == "":
     lookup_file = lookup_file
@@ -86,8 +86,8 @@ prob_dist = []
 s_itr = 0
 itr = 0
 for itr in range(P.no_itrs + 1):
-    print "========"
-    print "Iteration " + str(itr)
+    print("========")
+    print("Iteration " + str(itr))
 
     # computing the total electricity cost
     # total_cost = CC.main(prices=prices, loads=demands, coefficient=lookup_coeff)
@@ -104,7 +104,7 @@ for itr in range(P.no_itrs + 1):
         break
 
     # pricing
-    prices_long = [p for p in prices for i in xrange(interval)]
+    prices_long = [p for p in prices for i in range(interval)]
     sorted_periods = sorted(range(len(prices_long)), key=lambda x: prices_long[x])
     flag_schedule_battery = 1
     if prices_long[sorted_periods[0]] == prices_long[sorted_periods[-1]] or P.use_battery == 0:
@@ -129,9 +129,9 @@ for itr in range(P.no_itrs + 1):
         # for job in household:
         #     job, loads_household = SJ.main(job, prices_long, loads_household)
         #     total_penalty += job[i_penalty]
-        total_penalty_pre = total_penalty
+        total_penalty_pre_h = total_penalty
         total_penalty = SJ.main(household, prices_long, total_penalty)
-        penalty_per_household = total_penalty - total_penalty_pre
+        penalty_per_household = total_penalty - total_penalty_pre_h
         penalties_households.append(penalty_per_household)
 
         # scheduling the battery
@@ -163,7 +163,7 @@ for itr in range(P.no_itrs + 1):
         prob_dist.append(1 - alpha)
         prob_dist.append(alpha)
     else:
-        prob_dist = [p_d * (1-alpha) for p_d in prob_dist]
+        prob_dist = [p_d * (1 - alpha) for p_d in prob_dist]
         prob_dist.append(alpha)
     # print(prob_dist)
     # print(len(prob_dist))
@@ -178,15 +178,15 @@ for itr in range(P.no_itrs + 1):
     # print counter_fw
 
 # Time the entire experiment including recording data
-print ""
-print str(t_end - t_begin) + "s"
+print("")
+print(str(t_end - t_begin) + "s")
 
 # Write results to a json file
 WR.final(sub_dir, s_overview, s_demands, s_costs, s_prices, s_fw, s_lookup, s_loads_houses, no_houses,
-        P.no_itrs, randomization, no_intervals_day, P.load_data, penalty_coefficient, lookup_param, notes, P.jobs_file)
+         P.no_itrs, randomization, no_intervals_day, P.load_data, penalty_coefficient, lookup_param, notes, P.jobs_file)
 
-
-actual_total_demands_short, prices_short, actual_total_cost = SS.schedule(prob_dist, demands_itr, penalties_itr, lookup_coeff, sub_dir)
+actual_total_demands_short, prices_short, actual_total_cost = SS.schedule(prob_dist, demands_itr, penalties_itr,
+                                                                          lookup_coeff, sub_dir)
 s_fw = ""
 s_demands = str(s_itr + 1) + "," + "o," + str(actual_total_demands_short)[1:-1].replace(" ", "") + "\r\n"
 s_demands += str(s_itr + 1) + "," + "f," + str(actual_total_demands_short)[1:-1].replace(" ", "") + "\r\n"

@@ -1,4 +1,4 @@
-from inputs import i_astart, i_dur, i_demand, no_intervals_day, interval
+from scripts.inputs import i_astart, i_dur, i_demand, no_intervals_day, interval
 
 
 def main(community):
@@ -25,7 +25,7 @@ def main(community):
 
     # convert load per scheduling period into load per pricing period
     # print [i + j for i in xrange(no_per.iods_day) if i % interval == 0 for j in xrange(interval)]
-    demands = [sum([demands[i + j] for j in xrange(interval)])/interval for i in xrange(0, no_intervals_day, interval)]
+    demands = [sum([demands[i + j] for j in range(interval)])/interval for i in range(0, no_intervals_day, interval)]
 
     return demands, demands_households
 

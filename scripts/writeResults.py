@@ -92,7 +92,7 @@ def final(sub_dir, s_overview, s_loads, s_costs, s_prices, s_fw, s_lookup,
           s_loads_houses, h, i, r, t, data, incon, lookup, notes, jobs_file):
 
     file_name = "overview.csv"
-    with open(sub_dir + file_name, 'wb') as output_file:
+    with open(sub_dir + file_name, 'w') as output_file:
         output_file.write(s_overview)
 
     # file_name = "costs.csv"
@@ -112,14 +112,14 @@ def final(sub_dir, s_overview, s_loads, s_costs, s_prices, s_fw, s_lookup,
     #     output_file.write(s_fw)
 
     file_name = "lookup.csv"
-    with open(sub_dir + file_name, 'wb') as output_file:
+    with open(sub_dir + file_name, 'w') as output_file:
         output_file.write(s_lookup)
 
     file_name = "notes.txt"
-    with open(sub_dir + file_name, 'wb') as output_file:
+    with open(sub_dir + file_name, 'w') as output_file:
         output_file.write(notes)
 
     copy(jobs_file, sub_dir)
     copy("batteries.csv", sub_dir)
 
-    print "Results data is written."
+    print("Results data is written.")

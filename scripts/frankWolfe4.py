@@ -2,9 +2,9 @@
 # This version improved 2 by not using an array to store alphas of all periods
 # This version improved 3 by reducing the loops in eval_incr
 
-from inputs import no_pricing_periods, next_level_difference
-import inputs as P
-import pricing as PR
+from scripts.inputs import no_pricing_periods, next_level_difference
+import scripts.inputs as P
+import scripts.pricing as PR
 
 
 def main(loads_tent, loads_old, prices, penalty, penalty_pre, coe):
@@ -48,7 +48,7 @@ def main(loads_tent, loads_old, prices, penalty, penalty_pre, coe):
     while slope < 0 and not changed_cost == 0 and alpha_current <= 1:
         alpha_incr_min = 1
         # p_min = 0
-        for p in xrange(no_pricing_periods):
+        for p in range(no_pricing_periods):
             if abs(loads_incr[p]) > 0:
                 e_incr = eval_incr(p)
                 alpha_incr = float(e_incr) / float(loads_incr[p])

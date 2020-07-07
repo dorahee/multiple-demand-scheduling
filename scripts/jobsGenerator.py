@@ -1,7 +1,7 @@
 import bisect
 import random as r
 from numpy import sqrt, pi, random
-import inputs as P
+import scripts.inputs as P
 from csv import reader
 
 
@@ -38,7 +38,7 @@ def read():
         community.append(household)
 
     # community = community_json
-    print "Job data is read from {}.".format(P.jobs_file)
+    print ("Job data is read from {}.".format(P.jobs_file))
 
     return community
 
@@ -49,13 +49,13 @@ def create():
     l_demands = P.devices
 
     p_d_long = []
-    for i in xrange(len(p_d_short) - 1):
-        for j in xrange(P.interval):
+    for i in list(range(len(p_d_short) - 1)):
+        for j in list(range(P.interval)):
             p_d_long.append(p_d_short[i] + (p_d_short[i + 1] - p_d_short[i]) / P.interval * j)
 
     # i should be 46 at this time
     i = len(p_d_short) - 2  # make sure i is 46
-    for j in xrange(P.interval):
+    for j in range(P.interval):
         p_d_long.append(p_d_short[i + 1] + (p_d_short[i + 1] - p_d_short[i]) / P.interval * j)
 
     p_d_min = p_d_long[0] - p_d_long[0] / 3
@@ -69,7 +69,7 @@ def create():
     attributes = ["noh", "name", "demand", "estart", "pstart", "lfinish", "dur", "caf", "astart",
                   "predecessor", "max-succeeding-delay"]
     s_community = str(attributes)[1:-1].replace("'", "").replace(" ", "") + "\r\n"
-    for counter_h in xrange(P.no_houses):
+    for counter_h in range(P.no_houses):
         # household instance
         # household = H.Household()
         # household.name = "household" + str(counter_h)
@@ -77,7 +77,7 @@ def create():
         # household.no_jobs = no_jobs + 1
         household = []
         s_household = ""
-        for counter_j in xrange(no_jobs):
+        for counter_j in range(no_jobs):
             job = dict()
 
             # job name
@@ -164,9 +164,9 @@ def create():
         s_community += s_household
         # community.aggregated_loads = [x + y for x, y in zip(community.aggregated_loads, household.aggregated_loads)]
 
-    with open(P.jobs_file, 'wb') as output_file:
+    with open(P.jobs_file, 'w') as output_file:
         output_file.write(s_community)
-    print "Job data is generated and saved to {}.".format(P.jobs_file)
+    print("Job data is generated and saved to {}.".format(P.jobs_file))
 
     return community
 

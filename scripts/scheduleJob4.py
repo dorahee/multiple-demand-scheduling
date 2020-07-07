@@ -1,10 +1,10 @@
 # Version 2 combines scheduling and aggregating loads together
 # Version 3 uses a for loop to find the cheapest time slot, instead of using the list comprehension
 
-from inputs import no_intervals_day, penalty_coefficient, i_name, use_globals, \
+from scripts.inputs import no_intervals_day, penalty_coefficient, i_name, use_globals, \
     i_pstart, i_astart, i_estart, i_dur, i_lfinish, i_caf, i_demand, i_bill, i_penalty, show_astart, i_predecessor, i_succeeding_delay
 from time import time
-from aggregateDemands import aggregate_household
+from scripts.aggregateDemands import aggregate_household
 
 
 def main(household, prices_long, total_penalty):
@@ -79,7 +79,7 @@ def evaluate_job(job, price_long, household, max_demand):
         else:
             price_long_cp = price_previous_day + price_long + price_next_day
 
-    INTERVALS = xrange(len(price_long_cp))
+    INTERVALS = range(len(price_long_cp))
     load_per_scheduling_period = demand / (no_intervals_day / 24.0)
     bills = [sum(price_long_cp[i: i + dur]) * load_per_scheduling_period for i in INTERVALS]
     penalties = [abs(p_s_cp - i) * caf * penalty_coefficient for i in INTERVALS]

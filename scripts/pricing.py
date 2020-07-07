@@ -1,5 +1,5 @@
-from inputs import no_pricing_periods, next_level_difference
-import inputs as P
+from scripts.inputs import no_pricing_periods, next_level_difference
+import scripts.inputs as P
 
 
 def main(demands, coefficient):

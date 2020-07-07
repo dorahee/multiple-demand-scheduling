@@ -1,4 +1,4 @@
-from inputs import no_houses, no_pricing_periods, no_intervals_day, interval
+from scripts.inputs import no_houses, no_pricing_periods, no_intervals_day, interval
 from numpy.random import choice
 from scripts import pricing as PR
 
@@ -19,8 +19,8 @@ def schedule(prob_dist, demands_itr, penalties_itr, lookup_coeff, sub_dir):
 
         actual_total_penalty = sum(actual_penalties)
         actual_total_demands = [sum([actual_demands[h][t] for h in range(no_houses)]) for t in range(no_intervals_day)]
-        actual_total_demands_short = [sum([actual_total_demands[i + j] for j in xrange(interval)]) / interval
-                                    for i in xrange(0, no_intervals_day, interval)]
+        actual_total_demands_short = [sum([actual_total_demands[i + j] for j in range(interval)]) / interval
+                                    for i in range(0, no_intervals_day, interval)]
         prices_short = PR.main(actual_total_demands_short, lookup_coeff)
         actual_total_cost = sum([p * d * 0.5 for p, d in zip(prices_short, actual_total_demands_short)])
         actual_max_demand = max(actual_total_demands_short)
@@ -36,7 +36,7 @@ def schedule(prob_dist, demands_itr, penalties_itr, lookup_coeff, sub_dir):
 
         # join(map(str, my_lst))
 
-    with open(sub_dir + "sampled_schedules.csv", 'wb') as output_file:
+    with open(sub_dir + "sampled_schedules.csv", 'w') as output_file:
         output_file.write(sampled_outcomes)
 
     return actual_total_demands_short, prices_short, actual_total_cost

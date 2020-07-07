@@ -1,8 +1,8 @@
 __author__ = 'dora'
 
 # ------ BEGIN: CUSTOMISABLE DATA ------
-load_data = "read"
-# load_data = "create"
+# load_data = "read"
+load_data = "create"
 
 use_solver = False
 # use_solver = True
@@ -25,7 +25,7 @@ lookup_base = ""
 no_itrs = 100
 no_intervals_day = 144
 no_pricing_periods = 48
-interval = no_intervals_day / no_pricing_periods
+interval = int(no_intervals_day / no_pricing_periods)
 
 # 2. Parameters for generating data
 no_houses = 1000
