@@ -1,7 +1,16 @@
-from scripts import jobsGenerator as J, batteriesGenerator as B, pricing as PR, \
-    aggregateDemands as AD, frankWolfe4 as FW2, \
-    writeResults as WR, inputs as P, computeCosts2 as CC, \
-    readFiles as RF, scheduleBattery2 as SB, computeLookup as CLU, sampleSchedules as SS
+from scripts import \
+    jobsGenerator as J, \
+    batteriesGenerator as B, \
+    pricing as PR, \
+    aggregateDemands as AD, \
+    frankWolfe4 as FW2, \
+    writeResults as WR, \
+    inputs as P, \
+    computeCosts2 as CC, \
+    readFiles as RF, \
+    scheduleBattery2 as SB, \
+    computeLookup as CLU, \
+    sampleSchedules as SS
 from scripts.inputs import lookup_param, i_bill, i_penalty, interval, \
     no_intervals_day, no_pricing_periods, no_jobs_min, no_jobs_max, penalty_coefficient, randomization, use_solver
 from time import time
@@ -130,16 +139,17 @@ for itr in range(P.no_itrs + 1):
         #     job, loads_household = SJ.main(job, prices_long, loads_household)
         #     total_penalty += job[i_penalty]
         total_penalty_pre_h = total_penalty
-        total_penalty = SJ.main(household, prices_long, total_penalty)
+        total_penalty, demands_h = SJ.main(household, prices_long, total_penalty)
         penalty_per_household = total_penalty - total_penalty_pre_h
         penalties_households.append(penalty_per_household)
 
         # scheduling the battery
-        # if flag_schedule_battery == 1:
-        #     if itr == 0:
-        #         battery['energy'] = [battery['min']] * P.no_intervals_day
-        #         battery['activities'] = [0] * P.no_intervals_day
-        #     battery, demands_household = SB.main(battery, sorted_periods[:], demands_household, prices_long)
+        if flag_schedule_battery == 1:
+            if itr == 0:
+                battery['energy'] = [battery['min']] * P.no_intervals_day
+                battery['activities'] = [0] * P.no_intervals_day
+            battery, demands_h = SB.main(battery, sorted_periods[:], demands_h, prices_long)
+            # todo - update household demand, use this.
 
     t_scheduling_total += time() - t_scheduling_begin
     penalties_itr.append(penalties_households)
@@ -159,23 +169,18 @@ for itr in range(P.no_itrs + 1):
     t_fw_itr = time() - t_fw_begin
     t_fw_total += t_fw_itr
 
-    if prob_dist == []:
+    if prob_dist is []:
         prob_dist.append(1 - alpha)
         prob_dist.append(alpha)
     else:
         prob_dist = [p_d * (1 - alpha) for p_d in prob_dist]
         prob_dist.append(alpha)
-    # print(prob_dist)
-    # print(len(prob_dist))
-    # print(len(demands_itr))
 
     s_demands += str(s_itr) + "," + "f," + str(demands_short)[1:-1].replace(" ", "") + "\r\n"
     s_prices += str(s_itr) + "," + "f," + str(prices)[1:-1].replace(" ", "") + "\r\n"
     # s_prices += str(s_itr) + "," + "o," + str(prices)[1:-1].replace(" ", "") + "\n"
     s_fw = str(s_itr) + "," + str(alpha) + ", " + str(t_fw_itr) + "," + str(counter_fw) + "\r\n"
 
-    # print alpha
-    # print counter_fw
 
 # Time the entire experiment including recording data
 print("")

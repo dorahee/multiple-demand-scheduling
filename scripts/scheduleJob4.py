@@ -20,18 +20,22 @@ def main(household, prices_long, total_penalty):
     percent = 1
 
     max_demand = int(sum([j[i_demand] for j in household]) * percent) + 1
+    demands_household = [] * no_intervals_day
 
     for job in household:
         job_durations.append(job[i_dur])
         job_demands.append(int(job[i_demand] * 1000))
         job = evaluate_job(job, prices_long, household[:], max_demand)
         total_penalty += job[i_penalty]
-        # print(job[i_penalty])
+
+        # update the household demand
+        for i in range(job[i_dur]):
+            demands_household[(job[i_astart] + i) % no_intervals_day] += job[i_demand]
 
     if show_astart:
         print("astarts", [j[i_astart] for j in household], "obj", sum([j[i_penalty] + j[i_bill] for j in household]))
 
-    return total_penalty
+    return total_penalty, demands_household
 
 
 def evaluate_job(job, price_long, household, max_demand):
@@ -87,7 +91,6 @@ def evaluate_job(job, price_long, household, max_demand):
 
     min_cost = min(costs_job)
     min_cost_indices = [i for i, x in enumerate(costs_job) if x == min_cost]
-    # print(min_cost_indices)
 
     chosen_index = min_cost_indices[0]
     actual_start = (chosen_index - dur + 1) % no_intervals_day
@@ -130,10 +133,10 @@ def evaluate_job(job, price_long, household, max_demand):
     job[i_penalty] = penalties[chosen_index]
     job[i_astart] = actual_start
 
-    # print str(time() - t_begin) + "s"
-
     # add this load to the aggregate loads
-    # for i in xrange(dur):
+
+    # for i in range(dur):
+    #     demands_household[(actual_start + i) % no_intervals_day] += demand
     #     if actual_start + i > no_intervals_day - 1:
     #         demands_household[actual_start + i - no_intervals_day] += demand
     #     else:

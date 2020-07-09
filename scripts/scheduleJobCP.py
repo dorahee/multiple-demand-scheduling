@@ -1,7 +1,7 @@
 # Version 2 combines scheduling and aggregating loads together
 # Version 3 uses a for loop to find the cheapest time slot, instead of using the list comprehension
 
-from inputs import no_intervals_day, penalty_coefficient, \
+from scripts.inputs import no_intervals_day, penalty_coefficient, \
     i_pstart, i_astart, i_estart, i_dur, i_lfinish, i_caf, i_demand, i_bill, i_penalty, \
     i_predecessor, i_succeeding_delay, i_name, minizinc_model, minizinc_data, show_astart
 from subprocess import PIPE, Popen
@@ -11,8 +11,6 @@ from gurobipy import *
 
 
 def main(household, prices_long, total_penalty):
-
-    begin = time()
 
     costs_matrix = []
     job_durations = []
@@ -41,19 +39,18 @@ def main(household, prices_long, total_penalty):
     # gurobi
     job_astarts = solve_gurobi(costs_matrix, job_demands, job_durations, num_precedences, predecessors, successors, prec_delays, percent)
 
-    # start = time()
+    demands_household = [] * no_intervals_day
     for i, astart in enumerate(job_astarts):
         job = household[i]
         job[i_astart] = astart % no_intervals_day
         job[i_penalty] = abs(astart - job[i_pstart]) * job[i_caf] * penalty_coefficient
         total_penalty += job[i_penalty]
-        # print(job[i_penalty])
 
-    # print("update jobs time", time()-start)
+        # update the household demand
+        for i in range(job[i_dur]):
+            demands_household[(job[i_astart] + i) % no_intervals_day] += job[i_demand]
 
-    # print("total scheudling time", time() - begin)
-
-    return total_penalty
+    return total_penalty, demands_household
 
 
 def evaluate_job(job, price_long, costs_matrix):
@@ -93,7 +90,7 @@ def evaluate_job(job, price_long, costs_matrix):
         else:
             price_long_cp = price_previous_day + price_long + price_next_day
 
-    INTERVALS = xrange(len(price_long_cp))
+    INTERVALS = range(len(price_long_cp))
     bills = [sum(price_long_cp[i: i + dur]) * load_per_scheduling_period for i in INTERVALS]
     penalties = [abs(p_s_cp - i) * caf * penalty_coefficient for i in INTERVALS]
     costs_job = [x + y for x, y in zip(bills, penalties)]
@@ -104,7 +101,6 @@ def evaluate_job(job, price_long, costs_matrix):
 
 def solve_gurobi(costs_matrix, job_demands, job_durations, num_precedences, predecessors, successors, prec_delays, percent):
 
-    start = time()
     m = Model("household_load_scheduling")
 
     devices = []
@@ -141,10 +137,6 @@ def solve_gurobi(costs_matrix, job_demands, job_durations, num_precedences, pred
     m.setParam('OutputFlag', False)
     m.optimize()
 
-    # print("g solve time", time() - start)
-    #
-    # print('\nTOTAL COSTS: %g' % m.objVal)
-    # print('SOLUTION:')
     astarts = [(sum([int(i * t.x) for i, t in enumerate(d)]) - job_durations[j] + 1) % no_intervals_day
                for j, d in enumerate(devices)]
 
@@ -156,7 +148,6 @@ def solve_gurobi(costs_matrix, job_demands, job_durations, num_precedences, pred
 
 def solve_minizinc(costs_matrix, job_demands, job_durations, num_precedences, predecessors, successors, prec_delays, percent):
 
-    # begin_model = time()
     costs_matrix_str = str(costs_matrix).replace("], [", "|").replace("[[", "[|").replace("]]", "|]")
     max_demand = int(sum(job_demands) * percent)
     dzn_file_str = "no_intervals={0};\n" \
@@ -190,7 +181,6 @@ def solve_minizinc(costs_matrix, job_demands, job_durations, num_precedences, pr
     out = Popen(["minizinc", "-G", "linear", "-f", "mzn-gurobi", path_model, path_data], stdout=PIPE, stderr=PIPE)
     out_str = ",".join(out.stdout.readlines()[:1]).replace("A", '"')
     print(out_str)
-    # print("m solve time", time() - begin_model)
 
     out_json = loads(str(out_str))
     cp_astarts = out_json["astarts"]
