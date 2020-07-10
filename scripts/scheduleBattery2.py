@@ -15,7 +15,7 @@ def main(battery, sorted_periods, loads, prices):
             loads[p_expensive] -= e_charge
             battery['activities'][p_cheap] += e_charge
             battery['activities'][p_expensive] -= e_charge
-            for i in xrange(p_cheap, p_expensive):
+            for i in range(p_cheap, p_expensive):
                 battery['energy'][i] += e_charge
         else:
             del sorted_periods[0]
@@ -38,7 +38,7 @@ def main(battery, sorted_periods, loads, prices):
             loads[p_cheap] += e_discharge
             battery['activities'][p_expensive] -= e_discharge
             battery['activities'][p_cheap] += e_discharge
-            for i in xrange(p_expensive, p_cheap):
+            for i in range(p_expensive, p_cheap):
                 battery['energy'][i] -= e_discharge
         else:
             # del sorted_periods[-1]
@@ -115,6 +115,6 @@ def main(battery, sorted_periods, loads, prices):
                 del sorted_periods[0]
                 p_cheap = sorted_periods[0]
 
-    return battery, loads
+    return battery
 
 

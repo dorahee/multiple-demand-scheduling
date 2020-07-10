@@ -1,23 +1,26 @@
 __author__ = 'dora'
 
 # ------ BEGIN: CUSTOMISABLE DATA ------
-# load_data = "read"
+load_data = "read"
 load_data = "create"
 
+use_solver = True
 use_solver = False
-# use_solver = True
+
 
 use_globals = True
 
+show_astart = True
 show_astart = False
-# show_astart = True
 
-# battery_data = "read"
-# battery_data = "create"
+
 battery_data = "null"
+# battery_data = "read"
+battery_data = "create"
 
-# use_battery = 1
+
 use_battery = 0
+use_battery = 1
 
 lookup_base = ""
 

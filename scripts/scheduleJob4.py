@@ -20,7 +20,7 @@ def main(household, prices_long, total_penalty):
     percent = 1
 
     max_demand = int(sum([j[i_demand] for j in household]) * percent) + 1
-    demands_household = [] * no_intervals_day
+    demands_household = [0] * no_intervals_day
 
     for job in household:
         job_durations.append(job[i_dur])

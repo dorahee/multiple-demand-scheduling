@@ -39,7 +39,7 @@ else:
 community = J.main(P.load_data)
 no_houses = len(community)
 demands_itr = []
-demands_short, demands_households = AD.main(community)
+demands_short, demands_households = AD.main(community, batteries = None)
 demands_itr.append(demands_households)
 lookup_coeff = max(demands_short) * lookup_param
 penalties_itr = []
@@ -132,12 +132,6 @@ for itr in range(P.no_itrs + 1):
     penalties_households = []
     for household, battery in zip(community, batteries):
         counter += 1
-        # print("house id", counter)
-        # scheduling jobs
-        # loads_household = [0] * no_intervals_day
-        # for job in household:
-        #     job, loads_household = SJ.main(job, prices_long, loads_household)
-        #     total_penalty += job[i_penalty]
         total_penalty_pre_h = total_penalty
         total_penalty, demands_h = SJ.main(household, prices_long, total_penalty)
         penalty_per_household = total_penalty - total_penalty_pre_h
@@ -148,14 +142,17 @@ for itr in range(P.no_itrs + 1):
             if itr == 0:
                 battery['energy'] = [battery['min']] * P.no_intervals_day
                 battery['activities'] = [0] * P.no_intervals_day
-            battery, demands_h = SB.main(battery, sorted_periods[:], demands_h, prices_long)
-            # todo - update household demand, use this.
+            battery = SB.main(battery, sorted_periods[:], demands_h, prices_long)
 
     t_scheduling_total += time() - t_scheduling_begin
     penalties_itr.append(penalties_households)
 
     # total demand per pricing period
-    demands_short, demands_households = AD.main(community)
+    if flag_schedule_battery == 1:
+        demands_short, demands_households = AD.main(community, batteries)
+    else:
+        demands_short, demands_households = AD.main(community, batteries = None)
+
     demands_itr.append(demands_households)
     prices_actual_short = PR.main(demands_short, lookup_coeff)
 
@@ -169,7 +166,7 @@ for itr in range(P.no_itrs + 1):
     t_fw_itr = time() - t_fw_begin
     t_fw_total += t_fw_itr
 
-    if prob_dist is []:
+    if prob_dist == []:
         prob_dist.append(1 - alpha)
         prob_dist.append(alpha)
     else:
