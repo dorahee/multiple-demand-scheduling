@@ -23,12 +23,14 @@ def convert(s):
 def read():
     with open(P.jobs_file, mode='r') as file:
         csv_reader = reader(file)
-        headers = [h.strip(" \'") for h in csv_reader.next()]
+        headers = [h.strip(" \'") for h in next(csv_reader)]
         del headers[0]
 
         community = []
         household = []
         for row in csv_reader:
+            if len(row) == 0:
+                continue
             if int(row[1]) == 0 and int(row[0]) > 0:
                 community.append(household)
                 household = []
