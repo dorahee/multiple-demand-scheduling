@@ -29,6 +29,8 @@ def read():
         community = []
         household = []
         for row in csv_reader:
+            if len(row) == 0:
+                continue
             if int(row[1]) == 0 and int(row[0]) > 0:
                 community.append(household)
                 household = []
