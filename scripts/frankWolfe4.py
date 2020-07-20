@@ -62,8 +62,10 @@ def main(loads_tent, loads_old, prices, penalty, penalty_pre, coe):
         if alpha_current <= 1:
             loads_fw = [l_old + alpha_current * l_incr for l_old, l_incr in zip(loads_old, loads_incr)]
             prices_fw = PR.main(loads_fw, coe)
+            # todo - need to check this slope calculation
             changed_cost = sum(
                 [(p_fw - p_fw_pre) * l_incr for p_fw, p_fw_pre, l_incr in zip(prices_fw, prices_fw_pre, loads_incr)])
+            # changed_cost = sum([l * p for l, p in zip(loads_fw, prices_fw)]) - sum([l * p for l, p in zip()])
             if not changed_cost == 0:
                 slope += changed_cost
                 # print slope
