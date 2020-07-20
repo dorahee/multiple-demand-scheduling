@@ -23,7 +23,7 @@ def convert(s):
 def read():
     with open(P.jobs_file, mode='r') as file:
         csv_reader = reader(file)
-        headers = [h.strip(" \'") for h in csv_reader.next()]
+        headers = [h.strip(" \'") for h in next(csv_reader)]
         del headers[0]
 
         community = []
