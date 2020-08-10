@@ -101,7 +101,9 @@ for itr in range(P.no_itrs + 1):
     # computing the total electricity cost
     # total_cost = CC.main(prices=prices, loads=demands, coefficient=lookup_coeff)
     total_cost = sum([p * d * 0.5 for p, d in zip(prices, demands_short)])
-    s_costs += str(itr) + "," + "f," + str(total_cost) + "," + str(total_penalty) + "\r\n"
+    # s_costs += str(itr) + "," + "f," + str(total_cost) + "," + str(total_penalty) + str(total_cost + total_penalty) +"\r\n"
+    s_costs2 = [itr, "f", total_cost, total_penalty, total_cost + total_penalty]
+    s_costs += str(s_costs2)[1:-1].replace("'", "").replace(" ", "") + "\r\n"
 
     WR.append(sub_dir, s_demands, s_costs, s_prices, s_fw)
     s_costs = ""
@@ -161,7 +163,7 @@ for itr in range(P.no_itrs + 1):
 
     # frank-Wolfe
     t_fw_begin = time()
-    demands_short, prices, total_penalty, alpha, counter_fw = \
+    demands_short, prices, total_penalty, alpha, counter_fw, obj_fw, slope_fw = \
         FW2.main(demands_short, demands_short_pre, prices, total_penalty, total_penalty_pre, lookup_coeff)
     t_fw_itr = time() - t_fw_begin
     t_fw_total += t_fw_itr
@@ -176,7 +178,8 @@ for itr in range(P.no_itrs + 1):
     s_demands += str(s_itr) + "," + "f," + str(demands_short)[1:-1].replace(" ", "") + "\r\n"
     s_prices += str(s_itr) + "," + "f," + str(prices)[1:-1].replace(" ", "") + "\r\n"
     # s_prices += str(s_itr) + "," + "o," + str(prices)[1:-1].replace(" ", "") + "\n"
-    s_fw = str(s_itr) + "," + str(alpha) + ", " + str(t_fw_itr) + "," + str(counter_fw) + "\r\n"
+    s_fw = [s_itr, alpha, t_fw_itr, counter_fw, obj_fw, slope_fw]
+    s_fw = str(s_fw)[1:-1].replace("'", "").replace(" ", "") + "\r\n"
 
 
 # Time the entire experiment including recording data
@@ -194,5 +197,8 @@ s_demands = str(s_itr + 1) + "," + "o," + str(actual_total_demands_short)[1:-1].
 s_demands += str(s_itr + 1) + "," + "f," + str(actual_total_demands_short)[1:-1].replace(" ", "") + "\r\n"
 s_prices = str(s_itr + 1) + "," + "o," + str(prices_short)[1:-1].replace(" ", "") + "\r\n"
 s_prices += str(s_itr + 1) + "," + "f," + str(prices_short)[1:-1].replace(" ", "") + "\r\n"
-s_costs = str(itr + 1) + "," + "f," + str(actual_total_cost) + "," + str(total_penalty) + "\r\n"
+s_costs = [itr + 1, "f", actual_total_cost, total_penalty, total_cost + total_penalty]
+s_costs = str(s_costs)[1:-1].replace("'", "").replace(" ", "") + "\r\n"
+# s_costs = str(itr + 1) + "," + "f," + str(actual_total_cost) + "," + str(total_penalty) + "," + \
+#           str(total_cost + total_penalty) +"\r\n"
 WR.append(sub_dir, s_demands, s_costs, s_prices, s_fw)

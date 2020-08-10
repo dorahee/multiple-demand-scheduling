@@ -14,6 +14,7 @@ def main(loads_tent, loads_old, prices, penalty, penalty_pre, coe):
     delta_cost_init = sum([p * d for p, d in zip(prices, loads_incr)])
     delta_penalty_init = penalty - penalty_pre
     slope = delta_cost_init + delta_penalty_init
+    slope_fw = slope
     # print slope
 
     loads_fw = loads_old[:]
@@ -45,9 +46,10 @@ def main(loads_tent, loads_old, prices, penalty, penalty_pre, coe):
     alpha_current = 0
     alpha_final = 0
     counter_loop = 0
+
     while slope < 0 and not changed_cost == 0 and alpha_current <= 1:
+    # while slope < 0 and alpha_current <= 1:
         alpha_incr_min = 1
-        # p_min = 0
         for p in range(no_pricing_periods):
             if abs(loads_incr[p]) > 0:
                 e_incr = eval_incr(p)
@@ -56,26 +58,35 @@ def main(loads_tent, loads_old, prices, penalty, penalty_pre, coe):
                 alpha_incr = 1
             if alpha_incr < alpha_incr_min:
                 alpha_incr_min = alpha_incr
-                # p_min = p
 
         alpha_current += alpha_incr_min
         if alpha_current <= 1:
             loads_fw = [l_old + alpha_current * l_incr for l_old, l_incr in zip(loads_old, loads_incr)]
             prices_fw = PR.main(loads_fw, coe)
-            # todo - need to check this slope calculation
-            changed_cost = sum(
-                [(p_fw - p_fw_pre) * l_incr for p_fw, p_fw_pre, l_incr in zip(prices_fw, prices_fw_pre, loads_incr)])
-            # changed_cost = sum([l * p for l, p in zip(loads_fw, prices_fw)]) - sum([l * p for l, p in zip()])
-            if not changed_cost == 0:
-                slope += changed_cost
-                # print slope
-                if slope < 0:
-                    prices_fw_pre = prices_fw[:]
-                    alpha_final = alpha_current
-                    counter_loop += 1
+
+            # changed_cost = sum(
+            #     [(p_fw - p_fw_pre) * l_incr for p_fw, p_fw_pre, l_incr in zip(prices_fw, prices_fw_pre, loads_incr)])
+            # if not changed_cost == 0:
+            #     slope += changed_cost
+            #     if slope < 0:
+            #         prices_fw_pre = prices_fw[:]
+            #         alpha_final = alpha_current
+            #         counter_loop += 1
+
+            delta_cost_current = sum([p * d for p, d in zip(prices_fw, loads_incr)])
+            slope = delta_cost_current + delta_penalty_init
+
+            if slope < 0:
+                prices_fw_pre = prices_fw[:]
+                alpha_final = alpha_current
+                counter_loop += 1
+                slope_fw = slope
+
 
     loads_fw = [l_old + alpha_final * l_incr for l_old, l_incr in zip(loads_old, loads_incr)]
     penalty_fw = penalty_pre + alpha_final * delta_penalty_init
+
+    obj_fw = sum([p * d for p, d in zip(prices_fw, loads_fw)]) + penalty_fw
 
     # print str(sum(loads_fw))
     # print str(sum(loads_old))
@@ -83,7 +94,16 @@ def main(loads_tent, loads_old, prices, penalty, penalty_pre, coe):
     # Loads_fw is the solution that after the slope turns positive
     # I am not sure if I should the keep the solution before or after the slope turns positive
     # Mark has confirmed that it should be before.
-    return loads_fw, prices_fw_pre, penalty_fw, alpha_final, counter_loop
+    return loads_fw, prices_fw_pre, penalty_fw, alpha_final, counter_loop, obj_fw, slope_fw
+
+    # changed_cost = sum(
+    #     [(p_fw - p_fw_pre) * l_incr for p_fw, p_fw_pre, l_incr in zip(prices_fw, prices_fw_pre, loads_incr)])
+    # if not changed_cost == 0:
+    #     slope += changed_cost
+    #     if slope < 0:
+    #         prices_fw_pre = prices_fw[:]
+    #         alpha_final = alpha_current
+    #         counter_loop += 1
 
     # previous version of eval_incr(p)
 

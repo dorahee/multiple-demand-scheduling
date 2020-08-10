@@ -30,7 +30,7 @@ def prepare(no_houses, no_batteries, no_jobs_max, no_jobs_min,
         no_jobs_min) + "," + str(battery_cap) + "," + str(battery_charge) + "," + str(battery_discharge) + "," + str(lookup_coeff) + "," \
                   + str(lookup_file) + "," + str(notes) + "," + str(penalty_coefficient) + "," + str(no_intervals_day) + ","
 
-    headers = ["itr", "type", "tbill", "tpenalty"]
+    headers = ["itr", "type", "tbill", "tpenalty", "obj"]
     s_costs = str(headers)[1:-1].replace("'", "").replace(" ", "") + "\r\n"
 
     headers = ["prices"] + headers_periods
@@ -53,7 +53,7 @@ def prepare(no_houses, no_batteries, no_jobs_max, no_jobs_min,
     s_prices += "0," + "o," + str(prices)[1:-1].replace(" ", "") + "\r\n"
     s_prices += "0," + "f," + str(prices)[1:-1].replace(" ", "") + "\r\n"
 
-    headers = ["itr", "alpha", "fw_itrs_t", "fw_itrs"]
+    headers = ["itr", "alpha", "fw_itrs_t", "fw_itrs", "fw_obj", "fw_slope"]
     s_fw = str(headers)[1:-1].replace("'", "").replace(" ", "") + "\r\n"
 
     nowtime = datetime.now()
