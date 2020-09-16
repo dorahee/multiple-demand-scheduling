@@ -26,7 +26,6 @@ if "-r" in argv:
     P.load_data = "read"
 if "-jobs_file" in argv:
     P.jobs_file = argv[argv.index("-jobs_file") + 1]
-
 if "-ignore_globals" in argv:
     P.use_globals = False
 
