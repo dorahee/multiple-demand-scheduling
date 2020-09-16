@@ -41,7 +41,7 @@ def main(data_folder):
             if "cost" in file or "fw" in file or "load" in file or "price" in file or 'overview' in file:
                 with open(this_dir + "/" + file, mode='r') as csv_file:
                     csv_reader = reader(csv_file)
-                    headers = [h.strip(" \'") for h in csv_reader.next()]
+                    headers = [h.strip(" \'") for h in next(csv_reader)]
 
                     # print("yes")
                     rows = list(csv_reader)
@@ -102,13 +102,12 @@ def main(data_folder):
         s_out += str(par_reduction) + "," + str(par_begin) + "," + str(par_end) + ","
         s_out += str(bill_reduction) + "," + str(bill_begin) + "," + str(bill_end) + "," + str(penalty_end) + "\r\n"
 
-    print "Analysing results is done."
+    print("Analysing results is done.")
 
     if not path.exists(out_directory):
         makedirs(out_directory)
 
-    with open(out_file, 'wb') as output_file:
-            output_file.write(s_out)
-
+    with open(out_file, 'w') as output_file:
+        output_file.write(s_out)
 
 

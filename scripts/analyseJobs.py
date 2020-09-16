@@ -94,7 +94,7 @@ def main(data_folder):
     #         output_instance += "\n"
     #         output_entire += output_instance
 
-    print "Analysing jobs is done."
+    print ("Analysing jobs is done.")
 
     if not path.exists(out_directory):
         makedirs(out_directory)
