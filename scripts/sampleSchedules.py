@@ -40,6 +40,6 @@ def schedule(prob_dist, demands_itr, penalties_itr, lookup_coeff, sub_dir):
     with open(sub_dir + "sampled_schedules.csv", 'w') as output_file:
         output_file.write(sampled_outcomes)
 
-    print(str(no_totalSamples) + " schedules sampled. ")
+    print(str(no_totalSamples) + " schedules sampled. \n")
 
     return actual_total_demands_short, prices_short, actual_total_cost
