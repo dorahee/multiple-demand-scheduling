@@ -1,7 +1,7 @@
 # Version 2 combines scheduling and aggregating loads together
 # Version 3 uses a for loop to find the cheapest time slot, instead of using the list comprehension
 
-from scripts.inputs import no_intervals_day, penalty_coefficient, \
+from scripts.input_parameters import no_intervals_day, penalty_coefficient, \
     i_pstart, i_astart, i_estart, i_dur, i_lfinish, i_caf, i_demand, i_bill, i_penalty, \
     i_predecessor, i_succeeding_delay, i_name, minizinc_model, minizinc_data, show_astart
 from subprocess import PIPE, Popen

@@ -1,8 +1,9 @@
-from scripts import jobsGenerator as J, batteriesGenerator as B, pricing as PR, \
-    scheduleJob3 as SJ, aggregateDemands as AL, frankWolfe4 as FW2, \
-    writeResults as WR, inputs as P, computeCosts2 as CC, \
+from scripts import generation_task as J, generation_battery as B, pricing_prices as PR, \
+    aggregateDemands as AL, pricing_fw as FW2, \
+    writeResults as WR, input_parameters as P, computeCosts2 as CC, \
     readFiles as RF, scheduleBattery2 as SB
-from scripts.inputs import lookup_param, i_bill, i_penalty, interval, \
+from files.deprecated import scheduleJob3 as SJ
+from scripts.input_parameters import lookup_param, i_penalty, interval, \
     no_intervals_day, no_pricing_periods, no_jobs_min, no_jobs_max, penalty_coefficient, randomization
 from time import time
 from sys import argv

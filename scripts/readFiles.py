@@ -1,4 +1,4 @@
-import scripts.inputs as P
+import scripts.input_parameters as P
 from csv import reader
 
 

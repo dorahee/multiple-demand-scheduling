@@ -2,9 +2,9 @@
 # This version improved 2 by not using an array to store alphas of all periods
 # This version improved 3 by reducing the loops in eval_incr
 
-from scripts.inputs import no_pricing_periods, next_level_difference
-import scripts.inputs as P
-import scripts.pricing as PR
+from scripts.input_parameters import no_pricing_periods, next_level_difference
+import scripts.input_parameters as P
+import scripts.pricing_prices as PR
 
 
 def main(loads_tent, loads_old, prices, penalty, penalty_pre, coe):

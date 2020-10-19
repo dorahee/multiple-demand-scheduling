@@ -1,17 +1,15 @@
 from scripts import \
-    jobsGenerator as J, \
-    batteriesGenerator as B, \
-    pricing as PR, \
+    generation_task as J, \
+    generation_battery as B, \
+    pricing_prices as PR, \
     aggregateDemands as AD, \
-    frankWolfe4 as FW2, \
+    pricing_fw as FW2, \
     writeResults as WR, \
-    inputs as P, \
-    computeCosts2 as CC, \
+    input_parameters as P, \
     readFiles as RF, \
     scheduleBattery2 as SB, \
-    computeLookup as CLU, \
     sampleSchedules as SS
-from scripts.inputs import lookup_param, i_bill, i_penalty, interval, \
+from scripts.input_parameters import lookup_param, i_bill, i_penalty, interval, \
     no_intervals_day, no_pricing_periods, no_jobs_min, no_jobs_max, penalty_coefficient, randomization, use_solver
 from time import time
 from sys import argv
@@ -52,7 +50,7 @@ if P.use_battery == 0:
     no_batteries = "No"
 
 # lookup_file = ""
-lookup_file = 'files/lookup-0.csv'
+lookup_file = 'data/lookup-0.csv'
 # lookup_file = 'files/lookup-0-renew.csv'
 # lookup_file = 'files/lookup-100-zero-threshold9-flu.csv'
 P.lookup_base = RF.main(lookup_file)

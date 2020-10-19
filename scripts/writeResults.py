@@ -121,6 +121,6 @@ def final(sub_dir, s_overview, s_loads, s_costs, s_prices, s_fw, s_lookup,
 
     copy(jobs_file, sub_dir)
     copy("batteries.csv", sub_dir)
-    copy("scripts/inputs.py", sub_dir)
+    copy("scripts/input_parameters.py", sub_dir)
 
     print("Results data is written.")

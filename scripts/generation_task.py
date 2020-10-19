@@ -1,7 +1,7 @@
 import bisect
 import random as r
 from numpy import sqrt, pi, random
-import scripts.inputs as P
+import scripts.input_parameters as P
 from csv import reader
 
 

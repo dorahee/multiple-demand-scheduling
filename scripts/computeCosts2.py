@@ -1,5 +1,5 @@
-from scripts.inputs import no_pricing_periods
-import scripts.inputs as P
+from scripts.input_parameters import no_pricing_periods
+import scripts.input_parameters as P
 
 
 def main(prices, loads, coefficient):

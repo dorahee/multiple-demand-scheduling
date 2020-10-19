@@ -1,4 +1,4 @@
-from scripts.inputs import i_astart, i_dur, i_demand, no_intervals_day, interval
+from scripts.input_parameters import i_astart, i_dur, i_demand, no_intervals_day, interval
 
 
 def main(community, batteries):

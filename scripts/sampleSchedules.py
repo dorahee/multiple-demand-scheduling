@@ -1,6 +1,6 @@
-from scripts.inputs import no_houses, no_pricing_periods, no_intervals_day, interval
+from scripts.input_parameters import no_houses, no_pricing_periods, no_intervals_day, interval
 from numpy.random import choice
-from scripts import pricing as PR
+from scripts import pricing_prices as PR
 
 
 def schedule(prob_dist, demands_itr, penalties_itr, lookup_coeff, sub_dir):
