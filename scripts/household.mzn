@@ -32,11 +32,10 @@ constraint forall (p in PREC) (
    ); 
 
 % resource capacity constraint   
-% constraint cumulative(actual_starts, durations, demands, max_demand);
+constraint cumulative(actual_starts, durations, demands, max_demand);
 
 solve minimize sum (d in DEVICES) (run_costs[d, actual_starts[d]]);
 
-output ["{AastartsA:["] ++ [if d < no_devices then show(actual_starts[d] - 1) ++ ","  else show(actual_starts[d] - 1) endif | d in DEVICES] ++ ["]"] ++
-           [",AobjA: " ++ show(sum (d in DEVICES) (run_costs[d, actual_starts[d]])) ++ "}"];
+% output ["{AastartsA:["] ++ [if d < no_devices then show(actual_starts[d] - 1) ++ ","  else show(actual_starts[d] - 1) endif | d in DEVICES] ++ ["]"] ++ [",AobjA: " ++ show(sum (d in DEVICES) (run_costs[d, actual_starts[d]])) ++ "}"];
 
 % output [show(actual_starts)];

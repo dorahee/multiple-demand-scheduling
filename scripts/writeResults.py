@@ -15,7 +15,7 @@ def prepare(no_houses, no_batteries, no_jobs_max, no_jobs_min,
     headers = ["households", "batteries", "maxJobs", "minJobs",
                "battery_cap", "battery_charge", "battery_discharge",
                "lookupf", "lookupfile", "notes", "unhappinessf", "schedulingp",
-               "time", "fw_time", "pricing_time", "scheduling_time", "convergence", "use_globals"]
+               "time", "fw_time", "pricing_time", "scheduling_time", "convergence", "use_globals", "use_solver"]
     s_overview = str(headers)[1:-1].replace("'", "").replace(" ", "") + "\r\n"
 
     # if not lookup_file == "":

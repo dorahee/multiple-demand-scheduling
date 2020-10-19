@@ -9,7 +9,8 @@ def main(data_folder):
     out_directory = "analysis/results/"
     out_file = out_directory + data_folder + ".csv"
 
-    headers = ["instance", "houses", "batteries", "itrs", "use_globals","runtime", "fw_time", "pricing_time", "scheduling_time"]
+    headers = ["instance", "houses", "job_max", "job_min", "batteries", "itrs", "use_globals", "use_solver", "runtime",
+               "fw_time", "pricing_time", "scheduling_time"]
     headers += ["peak_reduction", "peak_begin", "peak_end", "par_reduction", "par_begin", "par_end"]
     headers += ["bill_reduction", "bill_begin", "bill_end", "penalty_end"]
     s_out = str(headers)[1:-1].replace("'", "").replace(" ", "") + "\r\n"
@@ -35,6 +36,7 @@ def main(data_folder):
         bill_begin = 0
         bill_end = 0
         use_globals = ""
+        use_solver = ""
 
         for file in files:
 
@@ -88,15 +90,21 @@ def main(data_folder):
                     elif "overview" in file:
                         no_houses = rows[0][0]
                         no_batteries = rows[0][1]
+                        no_job_max = rows[0][2]
+                        no_job_min = rows[0][3]
                         total_time = rows[0][12]
                         if len(rows[0]) > 16:
                             fw_time = rows[0][13]
                             pricing_time = rows[0][14]
                             scheduling_time = rows[0][15]
                             use_globals = rows[0][17]
-                        
+                            try:
+                                use_solver = rows[0][18]
+                            except IndexError:
+                                use_solver = "unknown"
 
-        s_out += sub_dir + "," + str(no_houses) + "," + str(no_batteries) + "," + str(no_itrs) + "," + str(use_globals) + ","
+        s_out += sub_dir + "," + str(no_houses) + "," + str(no_job_max) + "," + str(no_job_min) + "," + str(no_batteries) + ","
+        s_out += str(no_itrs) + "," + str(use_globals) + "," + str(use_solver) + ","
         s_out += str(total_time) + "," + str(fw_time) + "," + str(pricing_time) + "," + str(scheduling_time) + ","
         s_out += str(peak_reduction) + "," + str(peak_begin) + "," + str(peak_end) + ","
         s_out += str(par_reduction) + "," + str(par_begin) + "," + str(par_end) + ","
@@ -109,5 +117,5 @@ def main(data_folder):
 
     with open(out_file, 'w') as output_file:
         output_file.write(s_out)
-
+    
 

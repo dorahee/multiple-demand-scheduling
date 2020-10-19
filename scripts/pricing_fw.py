@@ -47,7 +47,7 @@ def main(loads_tent, loads_old, prices, penalty, penalty_pre, coe):
     alpha_final = 0
     counter_loop = 0
 
-    while slope < 0 and not changed_cost == 0 and alpha_current <= 1:
+    while slope < 0 and not changed_cost == 0 and alpha_current < 1:
     # while slope < 0 and alpha_current <= 1:
         alpha_incr_min = 1
         for p in range(no_pricing_periods):

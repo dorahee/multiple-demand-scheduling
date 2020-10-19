@@ -24,7 +24,6 @@ if "-r" in argv:
     P.load_data = "read"
 if "-jobs_file" in argv:
     P.jobs_file = argv[argv.index("-jobs_file") + 1]
-
 if "-ignore_globals" in argv:
     P.use_globals = False
 
@@ -109,7 +108,8 @@ for itr in range(P.no_itrs + 1):
     if itr == P.no_itrs or counter_fw == 0:
         t_end = time()
         s_overview += str(t_end - t_begin) + "," + str(t_fw_total) + "," + str(t_pricing_total) + "," \
-                      + str(t_scheduling_total) + "," + str(itr) + "," + str(P.use_globals) + "\r\n"
+                      + str(t_scheduling_total) + "," + str(itr) + "," + str(P.use_globals) + "," + str(P.use_solver) \
+                      + "\r\n"
         break
 
     # pricing
@@ -119,7 +119,7 @@ for itr in range(P.no_itrs + 1):
     if prices_long[sorted_periods[0]] == prices_long[sorted_periods[-1]] or P.use_battery == 0:
         flag_schedule_battery = 0
 
-    # start new iteration
+    # start new itera./tion
     s_itr = itr + 1
     demands_short_pre = demands_short[:]
     total_penalty_pre = total_penalty

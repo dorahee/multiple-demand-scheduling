@@ -5,8 +5,9 @@ from scripts import pricing_prices as PR
 
 def schedule(prob_dist, demands_itr, penalties_itr, lookup_coeff, sub_dir):
 
+    no_totalSamples = 10
     sampled_outcomes = ""
-    for _ in range(10):
+    for _ in range(no_totalSamples):
         total_itrs = len(demands_itr)
         no_houses = len(demands_itr[0])
         selction_households = choice(total_itrs, no_houses, p=prob_dist)
@@ -25,12 +26,12 @@ def schedule(prob_dist, demands_itr, penalties_itr, lookup_coeff, sub_dir):
         actual_total_cost = sum([p * d * 0.5 for p, d in zip(prices_short, actual_total_demands_short)])
         actual_max_demand = max(actual_total_demands_short)
 
-        print("actual max demand", actual_max_demand)
+        # print("actual max demand", actual_max_demand)
         # print("actual total demands", actual_total_demands_short)
-        print("actual total costs", actual_total_cost)
-        print("actual total penalty", actual_total_penalty)
-        print("Done sampling. ")
-        print("\n")
+        # print("actual total costs", actual_total_cost)
+        # print("actual total penalty", actual_total_penalty)
+        # print("Done sampling. ")
+        # print("\n")
 
         sampled_outcomes += ",".join(map(str, actual_total_demands_short)) + "\n"
 
@@ -38,5 +39,7 @@ def schedule(prob_dist, demands_itr, penalties_itr, lookup_coeff, sub_dir):
 
     with open(sub_dir + "sampled_schedules.csv", 'w') as output_file:
         output_file.write(sampled_outcomes)
+
+    print(str(no_totalSamples) + " schedules sampled. \n")
 
     return actual_total_demands_short, prices_short, actual_total_cost
