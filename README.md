@@ -12,7 +12,7 @@ Go into the folder where index.js is
 
 Run the viewer `./index.js`
 
-# version updates
+# Version updates
 Version 15 is an updated version of Version14.
 This improved performance dramatically by
 1. replacing deepcopy with shallow copy

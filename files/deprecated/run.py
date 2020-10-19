@@ -1,7 +1,7 @@
 from scripts import generation_task as J, generation_battery as B, pricing_prices as PR, \
-    aggregateDemands as AL, pricing_fw as FW2, \
-    writeResults as WR, input_parameters as P, computeCosts2 as CC, \
-    readFiles as RF, scheduleBattery2 as SB
+    pricing_demand_aggregation as AL, pricing_fw as FW2, \
+    output_results as WR, input_parameters as P, pricing_total_cost as CC, \
+    generation_read_files as RF, scheduling_battery as SB
 from files.deprecated import scheduleJob3 as SJ
 from scripts.input_parameters import lookup_param, i_penalty, interval, \
     no_intervals_day, no_pricing_periods, no_jobs_min, no_jobs_max, penalty_coefficient, randomization

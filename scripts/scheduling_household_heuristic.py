@@ -4,7 +4,7 @@
 from scripts.input_parameters import no_intervals_day, penalty_coefficient, i_name, use_globals, \
     i_pstart, i_astart, i_estart, i_dur, i_lfinish, i_caf, i_demand, i_bill, i_penalty, show_astart, i_predecessor, i_succeeding_delay
 from time import time
-from scripts.aggregateDemands import aggregate_household
+from scripts.pricing_demand_aggregation import aggregate_household
 
 
 def main(household, prices_long, total_penalty):

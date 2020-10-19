@@ -2,13 +2,13 @@ from scripts import \
     generation_task as J, \
     generation_battery as B, \
     pricing_prices as PR, \
-    aggregateDemands as AD, \
+    pricing_demand_aggregation as AD, \
     pricing_fw as FW2, \
-    writeResults as WR, \
+    output_results as WR, \
     input_parameters as P, \
-    readFiles as RF, \
-    scheduleBattery2 as SB, \
-    sampleSchedules as SS
+    generation_read_files as RF, \
+    scheduling_battery as SB, \
+    scheduling_household_actual as SS
 from scripts.input_parameters import lookup_param, i_bill, i_penalty, interval, \
     no_intervals_day, no_pricing_periods, no_jobs_min, no_jobs_max, penalty_coefficient, randomization, use_solver
 from time import time
@@ -28,9 +28,9 @@ if "-ignore_globals" in argv:
     P.use_globals = False
 
 if P.use_solver:
-    from scripts import scheduleJobCP as SJ
+    from scripts import scheduling_household_CP as SJ
 else:
-    from scripts import scheduleJob4 as SJ
+    from scripts import scheduling_household_heuristic as SJ
 
 # Generate data
 community = J.main(P.load_data)

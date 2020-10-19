@@ -1,5 +1,5 @@
-from scripts import analyseJobs as AJ
-from scripts import analyseResults as AR
+from scripts import analysis_task as AJ
+from scripts import analysis_results as AR
 from sys import argv
 
 # -------- parameters--------

@@ -5,7 +5,7 @@ __author__ = 'dora'
 load_data = "create"
 
 use_solver = True
-# use_solver = False
+use_solver = False
 
 use_globals = True
 
